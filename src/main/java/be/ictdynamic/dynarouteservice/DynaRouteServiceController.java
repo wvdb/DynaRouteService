@@ -23,4 +23,5 @@ public class DynaRouteServiceController {
         return new Greeting(COUNTER.incrementAndGet(), String.format(TEMPLATE, commune));
     }
 
+
 }
