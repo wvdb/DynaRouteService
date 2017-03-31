@@ -1,9 +1,12 @@
 package be.ictdynamic.dynarouteservice;
 
+import be.ictdynamic.dynarouteservice.domain.Dummy;
 import be.ictdynamic.dynarouteservice.domain.DynaRouteServiceResponse;
 import be.ictdynamic.dynarouteservice.domain.Greeting;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +22,11 @@ public class DynaRouteServiceController {
     private static final String TEMPLATE = "You are from %s!";
     private static final AtomicLong COUNTER = new AtomicLong();
 
+    @Autowired
+    private Dummy dummy;
+
+    @ApiOperation(value = "Test method to verify whether the service is up and running.",
+            notes = "Accepts commune as a parameter and includes it in the response-message.")
     @RequestMapping(value = "/greeting",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -29,6 +37,8 @@ public class DynaRouteServiceController {
         return new Greeting(COUNTER.incrementAndGet(), greetingText);
     }
 
+    @ApiOperation(value = "Business method to ...",
+            notes = "So far this returns a dummy response.")
     @RequestMapping(value = "/route",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
