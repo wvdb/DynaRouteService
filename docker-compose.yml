@@ -1,0 +1,13 @@
+version: '2'
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_USER: provisioning
+      MYSQL_PASSWORD: provisioning
+      MYSQL_DATABASE: provisioning
+    ports:
+      - "3306:3306"

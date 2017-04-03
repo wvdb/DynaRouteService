@@ -31,7 +31,7 @@ public class DynaRouteServiceController {
     @RequestMapping(value = "/greeting",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity greeting(@RequestParam(value = "commune", defaultValue = "Edegem") String commune) {
+    public ResponseEntity greeting(@RequestParam(value = "commune", required = true, defaultValue = "Edegem") String commune) {
         String greetingText = String.format(TEMPLATE, commune);
         LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + " Greeting, text = " + greetingText);
         LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + " Greeting");
