@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,11 +31,11 @@ public class DynaRouteServiceController {
     @RequestMapping(value = "/greeting",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Greeting greeting(@RequestParam(value = "commune", defaultValue = "Edegem") String commune) {
+    public ResponseEntity greeting(@RequestParam(value = "commune", defaultValue = "Edegem") String commune) {
         String greetingText = String.format(TEMPLATE, commune);
         LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + " Greeting, text = " + greetingText);
         LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + " Greeting");
-        return new Greeting(COUNTER.incrementAndGet(), greetingText);
+        return ResponseEntity.ok(new Greeting(COUNTER.incrementAndGet(), greetingText));
     }
 
     @ApiOperation(value = "Business method to ...",

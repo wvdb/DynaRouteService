@@ -11,7 +11,6 @@ import java.io.Serializable;
  */
 @XmlRootElement(name = "DynaRouteServiceResponse")
 public class DynaRouteServiceResponse implements Serializable {
-
     @Getter
     @Setter
     public String dummy1;
