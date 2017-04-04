@@ -5,5 +5,6 @@ package be.ictdynamic.dynarouteservice;
  */
 public class DynaRouteServiceConstants {
     public static final String LOG_STARTING = ">>>Starting";
+    public static final String LOG_ERROR = "!!!Error";
     public static final String LOG_ENDING = "<<<Exiting";
 }

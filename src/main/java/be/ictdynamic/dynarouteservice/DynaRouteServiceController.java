@@ -1,8 +1,10 @@
 package be.ictdynamic.dynarouteservice;
 
 import be.ictdynamic.dynarouteservice.domain.Dummy;
-import be.ictdynamic.dynarouteservice.domain.DynaRouteServiceResponse;
+import be.ictdynamic.dynarouteservice.domain.GoogleMapRequest;
+import be.ictdynamic.dynarouteservice.domain.GoogleMapResponse;
 import be.ictdynamic.dynarouteservice.domain.Greeting;
+import be.ictdynamic.dynarouteservice.services.google_service.GoogleMapServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,9 @@ public class DynaRouteServiceController {
     @Autowired
     private Dummy dummy;
 
+    @Autowired
+    private GoogleMapServiceImpl googleMapService;
+
     @ApiOperation(value = "Test method to verify whether the service is up and running.",
             notes = "Accepts commune as a parameter and includes it in the response-message.")
     @RequestMapping(value = "/greeting",
@@ -38,22 +43,19 @@ public class DynaRouteServiceController {
         return ResponseEntity.ok(new Greeting(COUNTER.incrementAndGet(), greetingText));
     }
 
-    @ApiOperation(value = "Business method to ...",
-            notes = "So far this returns a dummy response.")
+    @ApiOperation(value = "Business method to retrieve distances and duration when driving/walking/bicycling/using public transport",
+            notes = "Distances is in metres, duration is in seconds.")
     @RequestMapping(value = "/route",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
 //            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public DynaRouteServiceResponse handleGetRequest(
-              @RequestParam(value = "ipAddress", required = true) String ipAddress
-            , @RequestParam(value = "customerId", required = true) String customerId
-            , @RequestParam(value = "platform", required = false) String platform
-            , @RequestParam(value = "identifier", required = false) String identifier) {
+    public GoogleMapResponse handleGetRequest(
+              @RequestParam(value = "homeAddress", required = true) String homeAddress
+            , @RequestParam(value = "officeAddress", required = true) String officeAddress) {
 
-        DynaRouteServiceResponse response = new DynaRouteServiceResponse();
-        response.dummy1 = "this is a test";
+        GoogleMapRequest googleMapRequest = new GoogleMapRequest(officeAddress, homeAddress);
 
-        return response;
+        return googleMapService.getGoogleDistance(googleMapRequest);
     }
 
 }
