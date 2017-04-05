@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Class GoogleMapRequest.
@@ -23,9 +24,14 @@ public class TransportRequest implements Serializable {
     @Setter
     private String homeAddress;
 
-    public TransportRequest(String officeAddress, String homeAddress) {
+    @Getter
+    @Setter
+    private Date departureTime;
+
+    public TransportRequest(String officeAddress, String homeAddress, Date departureTime) {
         this.officeAddress = officeAddress;
         this.homeAddress = homeAddress;
+        this.departureTime = departureTime;
     }
 
     @Override
@@ -33,6 +39,7 @@ public class TransportRequest implements Serializable {
         return "GoogleMapRequest{" +
                 "officeAddress='" + officeAddress + '\'' +
                 ", homeAddress='" + homeAddress + '\'' +
+                ", departureTime='" + departureTime + '\'' +
                 '}';
     }
 }

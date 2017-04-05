@@ -3,12 +3,13 @@ package be.ictdynamic.dynarouteservice;
 import be.ictdynamic.dynarouteservice.domain.Dummy;
 import be.ictdynamic.dynarouteservice.domain.Greeting;
 import be.ictdynamic.dynarouteservice.domain.TransportRequest;
-import be.ictdynamic.dynarouteservice.domain.TransportResponse;
 import be.ictdynamic.dynarouteservice.services.google_service.GoogleServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -49,11 +51,17 @@ public class DynaRouteServiceController {
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
 //            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public TransportResponse handleGetRequest(
+    public ResponseEntity handleGetRequest(
               @RequestParam(value = "homeAddress", required = true) String homeAddress
-            , @RequestParam(value = "officeAddress", required = true) String officeAddress) {
-        TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress);
-        return googleService.getGoogleDistance(transportRequest);
+            , @RequestParam(value = "officeAddress", required = true) String officeAddress
+            , @RequestParam(value = "departureTime", required = false) @DateTimeFormat(pattern="dd/MM/yyyy HH:mm:ss") Date departureTime) {
+        TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress, departureTime);
+        if (departureTime.before(new Date())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Time must not be in the past.");
+        }
+        else {
+            return ResponseEntity.ok(googleService.getGoogleDistance(transportRequest));
+        }
     }
 
 }

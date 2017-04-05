@@ -43,13 +43,21 @@ public class GoogleServiceImpl implements GoogleService {
         HashMap<String, GoogleTransportInfo> googleTransportInfoMap = new HashMap<>();
         transportResponse.setTransportInfoMap(new HashMap<>());
 
-        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
+//        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
+        List<String> transitModes = Arrays.asList(DRIVING);
 
         transitModes.forEach(transitMode -> {
             GoogleTransportInfo googleTransportInfo = null;
             try {
-                // TODO : support for future times
-                googleTransportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, System.currentTimeMillis() / 1000);
+                long departTimeLong;
+                // if departureTime is unknown, we use system date as default
+                if (transportRequest.getDepartureTime() == null) {
+                    departTimeLong = System.currentTimeMillis() / 1000;
+                }
+                else {
+                    departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
+                }
+                googleTransportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong);
                 googleTransportInfoMap.put(transitMode, googleTransportInfo);
             } catch (URISyntaxException e) {
                 LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
@@ -151,11 +159,11 @@ public class GoogleServiceImpl implements GoogleService {
                         googleTransportInfo.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
                         // when we drive, we use duration_in_traffic to get a more realistic duration
                         if (DRIVING.equals(transitMode)) {
-                            LOGGER.debug("---google duration = {0}", jsonElement.getJSONObject("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
+                            LOGGER.debug("---google duration = {0}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
                             googleTransportInfo.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
                         }
                         else {
-                            LOGGER.debug("---google duration = {0}", jsonElement.getJSONObject("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
+                            LOGGER.debug("---google duration = {0}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
                             googleTransportInfo.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
                         }
                     }
