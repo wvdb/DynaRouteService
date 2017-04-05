@@ -1,6 +1,6 @@
 package be.ictdynamic.dynarouteservice.common.lang;
 
-import be.ictdynamic.common.collections.CollectionUtilities;
+import be.ictdynamic.dynarouteservice.common.collections.CollectionUtilities;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;

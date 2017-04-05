@@ -1,6 +1,6 @@
 package be.ictdynamic.dynarouteservice.common.beanutils;
 
-import be.ictdynamic.common.lang.DateFormatUtilities;
+import be.ictdynamic.dynarouteservice.common.lang.DateFormatUtilities;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

@@ -1,6 +1,7 @@
 package be.ictdynamic.dynarouteservice.common.lang;
 
-import be.ictdynamic.common.collections.CollectionUtilities;
+
+import be.ictdynamic.dynarouteservice.common.collections.CollectionUtilities;
 
 import java.util.ArrayList;
 import java.util.Iterator;

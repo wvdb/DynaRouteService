@@ -11,16 +11,16 @@ import java.util.HashMap;
  */
 public class GoogleMapResponse implements Serializable {
     // hashmap with key = transport and value = GoogleTransportInfo
-    private HashMap<String, GoogleTransportInfo> googleTransportInfoMap;
+    private HashMap<String, GoogleTransportInfo> transportInfoMap;
 
-    public HashMap<String, GoogleTransportInfo> getGoogleTransportInfoMap() {
-        if (googleTransportInfoMap == null) {
-            googleTransportInfoMap = new HashMap<>();
+    public HashMap<String, GoogleTransportInfo> getTransportInfoMap() {
+        if (transportInfoMap == null) {
+            transportInfoMap = new HashMap<>();
         }
-        return googleTransportInfoMap;
+        return transportInfoMap;
     }
 
-    public void setGoogleTransportInfoMap(HashMap<String, GoogleTransportInfo> googleTransportInfoMap) {
-        this.googleTransportInfoMap = googleTransportInfoMap;
+    public void setTransportInfoMap(HashMap<String, GoogleTransportInfo> transportInfoMap) {
+        this.transportInfoMap = transportInfoMap;
     }
 }

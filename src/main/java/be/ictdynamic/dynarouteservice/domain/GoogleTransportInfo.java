@@ -21,4 +21,12 @@ public class GoogleTransportInfo implements Serializable {
     @Getter
     @Setter
     public Integer duration;
+
+    @Override
+    public String toString() {
+        return "GoogleTransportInfo{" +
+                "distance=" + distance +
+                ", duration=" + duration +
+                '}';
+    }
 }

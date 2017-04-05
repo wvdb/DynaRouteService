@@ -1,6 +1,6 @@
 package be.ictdynamic.dynarouteservice.common.beanutils;
 
-import be.ictdynamic.common.lang.ClassUtilities;
+import be.ictdynamic.dynarouteservice.common.lang.ClassUtilities;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;

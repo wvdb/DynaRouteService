@@ -52,9 +52,7 @@ public class DynaRouteServiceController {
     public GoogleMapResponse handleGetRequest(
               @RequestParam(value = "homeAddress", required = true) String homeAddress
             , @RequestParam(value = "officeAddress", required = true) String officeAddress) {
-
         GoogleMapRequest googleMapRequest = new GoogleMapRequest(officeAddress, homeAddress);
-
         return googleMapService.getGoogleDistance(googleMapRequest);
     }
 

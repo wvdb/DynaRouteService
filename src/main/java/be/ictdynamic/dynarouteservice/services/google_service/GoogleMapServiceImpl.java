@@ -33,12 +33,18 @@ public class GoogleMapServiceImpl implements GoogleMapService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleMapServiceImpl.class);
     public static final String GOOGLE_DISTANCE_MATRIX_API_KEY = "AIzaSyDrQxf6ftnF-2xihZBUQkTL6ZEIlgee5WA";
 
+    public static final String DRIVING = "driving";
+    public static final String WALKING = "walking";
+    public static final String BICYCLING = "bicycling";
+    public static final String TRANSIT = "transit";
+
     public GoogleMapResponse getGoogleDistance(final GoogleMapRequest googleMapRequest) {
         GoogleMapResponse googleMapResponse = new GoogleMapResponse();
         HashMap<String, GoogleTransportInfo> googleTransportInfoMap = new HashMap<>();
-        googleMapResponse.setGoogleTransportInfoMap(new HashMap<>());
+        googleMapResponse.setTransportInfoMap(new HashMap<>());
 
-        List<String> transitModes = Arrays.asList("driving ", "walking", "bicycling", "transit");
+        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
+
         transitModes.forEach(transitMode -> {
             GoogleTransportInfo googleTransportInfo = null;
             try {
@@ -50,7 +56,7 @@ public class GoogleMapServiceImpl implements GoogleMapService {
             }
         });
 
-        googleMapResponse.setGoogleTransportInfoMap(googleTransportInfoMap);
+        googleMapResponse.setTransportInfoMap(googleTransportInfoMap);
         return googleMapResponse;
     }
 
@@ -60,16 +66,46 @@ public class GoogleMapServiceImpl implements GoogleMapService {
         GoogleTransportInfo googleTransportInfo = new GoogleTransportInfo();
         HttpClient client = new DefaultHttpClient();
 
-        // url of Google Distance Matrix API = https://developers.google.com/maps/documentation/distance-matrix/intro#travel_modes
+        // Google Distance Matrix API = https://developers.google.com/maps/documentation/distance-matrix/start
 
-//        URI uri = new URI(
-//                "https",
-//                "maps.googleapis.com",
-//                "/maps/api/distancematrix/json",
-//                          "origins=" + googleMapRequest.homeAddress + ",+" + googleMapRequest.homeCommune + ",+" + googleMapRequest.homeCountry
-//                        + "&destinations=" + googleMapRequest.officeAddress + ",+" + googleMapRequest.officeCommune + ",+" + googleMapRequest.officeCountry
-//                        + "&departure_time=" + departureTime + "&mode=" + transitMode + "&key=" + GOOGLE_DISTANCE_MATRIX_API_KEY,
-//                null);
+        // example of a request:
+
+//        https://maps.googleapis.com/maps/api/distancematrix/json?
+//                              origins=Tweebunder%204,+Edegem,+Belgium&
+//                              destinations=Oostende,+Belgium&
+//                              departure_time=1492675220&
+//                              key=AIzaSyDrQxf6ftnF-2xihZBUQkTL6ZEIlgee5WA
+
+        // example of a response:
+
+//        {
+//            "destination_addresses" : [ "8400 Ostend, Belgium" ],
+//            "origin_addresses" : [ "Tweebunder 4, 2650 Edegem, Belgium" ],
+//            "rows" : [
+//            {
+//                "elements" : [
+//                {
+//                    "distance" : {
+//                    "text" : "129 km",
+//                            "value" : 128582
+//                },
+//                    "duration" : {
+//                    "text" : "1 hour 17 mins",
+//                            "value" : 4629
+//                },
+//                    "duration_in_traffic" : {
+//                    "text" : "1 hour 19 mins",
+//                            "value" : 4725
+//                },
+//                    "status" : "OK"
+//                }
+//                ]
+//            }
+//            ],
+//            "status" : "OK"
+//        }
+
+        // epoch : https://www.epochconverter.com/
 
         URI uri = new URI(
                 "https",
@@ -82,37 +118,51 @@ public class GoogleMapServiceImpl implements GoogleMapService {
 
         String httpRequest = uri.toASCIIString();
 
-        LOGGER.debug(">>>HTTP request = {}" + httpRequest);
+        LOGGER.debug("--- HTTP request = {}" + httpRequest);
 
         HttpGet request = new HttpGet(httpRequest);
 
         try {
             HttpResponse response = client.execute(request);
-            LOGGER.debug(">>>HTTP response = {}" + response);
+            LOGGER.debug("--- HTTP response = {}" + response);
 
             // CONVERT RESPONSE TO STRING
             String stringResult = EntityUtils.toString(response.getEntity());
-            LOGGER.debug(">>>HTTP stringResult = {}" + stringResult);
+            LOGGER.debug("--- stringResult = {}" + stringResult);
 
-            JSONObject jsonobject1 = new JSONObject(stringResult);
-            LOGGER.debug(">>>HTTP jsonobject1 = {}" + jsonobject1);
+            JSONObject jsonObject = new JSONObject(stringResult);
+            LOGGER.debug("--- jsonObject = {}" + jsonObject);
 
-            // CONVERT STRING TO JSON ARRAY
-            JSONArray jsonArrayRow = jsonobject1.getJSONArray("rows");
+            // only process response if google was able to process the request
 
-            for (int i = 0; i < jsonArrayRow.length(); i++) {
-                // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
-                JSONObject jsonobject2 = jsonArrayRow.getJSONObject(i);
+            if ("OK".equals(jsonObject.get("status"))) {
+                // CONVERT STRING TO JSON ARRAY
+                JSONArray jsonArrayRow = jsonObject.getJSONArray("rows");
 
-                JSONArray jsonArrayElement = jsonobject2.getJSONArray("elements");
-                for (int j = 0; j < jsonArrayElement.length(); j++) {
-                    JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
-                    LOGGER.debug("---google distance = {0}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
-                    LOGGER.debug("---google duration = {0}", jsonElement.getJSONObject("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
+                for (int i = 0; i < jsonArrayRow.length(); i++) {
+                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+                    JSONObject jsonobject2 = jsonArrayRow.getJSONObject(i);
 
-                    googleTransportInfo.distance = jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value");
-                    googleTransportInfo.duration = jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value");
+                    JSONArray jsonArrayElement = jsonobject2.getJSONArray("elements");
+                    for (int j = 0; j < jsonArrayElement.length(); j++) {
+                        JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
+                        LOGGER.debug("---google distance = {0}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
+
+                        googleTransportInfo.distance = jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value");
+                        // when we drive, we use duration_in_traffic to get a more realistic duration
+                        if (DRIVING.equals(transitMode)) {
+                            LOGGER.debug("---google duration = {0}", jsonElement.getJSONObject("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
+                            googleTransportInfo.duration = jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value");
+                        }
+                        else {
+                            LOGGER.debug("---google duration = {0}", jsonElement.getJSONObject("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
+                            googleTransportInfo.duration = jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value");
+                        }
+                    }
                 }
+            }
+            else {
+                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
             }
 
         } catch (Throwable e) {
@@ -120,7 +170,7 @@ public class GoogleMapServiceImpl implements GoogleMapService {
             return googleTransportInfo;
         }
 
-        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "mode = {}, request = {}, response = {}", transitMode, googleMapRequest, googleTransportInfo);
+        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "mode = {}, request = {}, googleTransportInfo = {}", transitMode, googleMapRequest, googleTransportInfo);
         return googleTransportInfo;
     }
 

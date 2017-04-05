@@ -1,6 +1,6 @@
 package be.ictdynamic.dynarouteservice.common.beanutils;
 
-import be.ictdynamic.common.collections.CollectionUtilities;
+import be.ictdynamic.dynarouteservice.common.collections.CollectionUtilities;
 import org.apache.commons.beanutils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

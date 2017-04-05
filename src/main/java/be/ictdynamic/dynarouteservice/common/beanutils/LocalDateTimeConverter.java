@@ -1,6 +1,6 @@
 package be.ictdynamic.dynarouteservice.common.beanutils;
 
-import be.ictdynamic.common.lang.DateFormatUtilities;
+import be.ictdynamic.dynarouteservice.common.lang.DateFormatUtilities;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

@@ -206,17 +206,6 @@ public final class CollectionUtilities {
     }
 
     /**
-     * Converts all the values of the given Collection into the target type.
-     *
-     * @param collection The Collection to convert
-     * @param type       The type to convert the Collection values into
-     * @return A Collection containing the converted values
-     */
-    public static <T, I> Collection<T> transform(Collection<I> collection, final Class<T> type) {
-        return transform(collection, new SimpleObjectTransformer<I, T>(type));
-    }
-
-    /**
      * Casts all elements in the specified collection to the specified type.
      *
      * @param collection Collection of elements to be cast to the specified type.
@@ -236,17 +225,6 @@ public final class CollectionUtilities {
      */
     public static <T, I> Collection<T> transform(Collection<I> collection, Transformer<? super I, T> transformer) {
         return transform(collection, new LinkedList<T>(), transformer);
-    }
-
-    /**
-     * Converts all the values of the given array into the target type.
-     *
-     * @param collection The Collection to convert
-     * @param type       The type to convert the Collection values into
-     * @return A Collection containing the converted values
-     */
-    public static <T, I> Collection<T> transform(I[] collection, final Class<T> type) {
-        return transform(collection, new SimpleObjectTransformer<I, T>(type));
     }
 
     /**

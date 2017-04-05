@@ -1,6 +1,6 @@
 package be.ictdynamic.dynarouteservice.common.lang;
 
-import be.ictdynamic.common.beanutils.ConvertUtilities;
+import be.ictdynamic.dynarouteservice.common.beanutils.ConvertUtilities;
 import org.apache.commons.beanutils.DynaBean;
 
 import java.util.Collection;

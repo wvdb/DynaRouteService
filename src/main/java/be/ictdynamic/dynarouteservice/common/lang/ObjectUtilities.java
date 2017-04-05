@@ -1,7 +1,7 @@
 package be.ictdynamic.dynarouteservice.common.lang;
 
-import be.ictdynamic.common.beanutils.ConvertUtilities;
-import be.ictdynamic.common.beanutils.ReflectionUtilities;
+import be.ictdynamic.dynarouteservice.common.beanutils.ConvertUtilities;
+import be.ictdynamic.dynarouteservice.common.beanutils.ReflectionUtilities;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
