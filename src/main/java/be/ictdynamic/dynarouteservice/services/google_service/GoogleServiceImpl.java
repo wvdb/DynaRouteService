@@ -132,14 +132,14 @@ public class GoogleServiceImpl implements GoogleService {
 
         try {
             HttpResponse httpResponse = httpClient.execute(request);
-            LOGGER.debug("--- httpResponse = {}" + httpResponse);
+            LOGGER.debug("--- httpResponse = {}", httpResponse);
 
             // CONVERT RESPONSE TO STRING
             String stringResult = EntityUtils.toString(httpResponse.getEntity());
-            LOGGER.debug("--- stringResult = {}" + stringResult);
+            LOGGER.debug("--- stringResult = {}", stringResult);
 
             JSONObject jsonObject = new JSONObject(stringResult);
-            LOGGER.debug("--- jsonObject = {}" + jsonObject);
+            LOGGER.debug("--- jsonObject = {}", jsonObject);
 
             // only process response if google was able to process the request
 
@@ -149,9 +149,9 @@ public class GoogleServiceImpl implements GoogleService {
 
                 for (int i = 0; i < jsonArrayRow.length(); i++) {
                     // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
-                    JSONObject jsonobject2 = jsonArrayRow.getJSONObject(i);
+                    JSONObject jsonoOject2 = jsonArrayRow.getJSONObject(i);
 
-                    JSONArray jsonArrayElement = jsonobject2.getJSONArray("elements");
+                    JSONArray jsonArrayElement = jsonoOject2.getJSONArray("elements");
                     for (int j = 0; j < jsonArrayElement.length(); j++) {
                         JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
                         LOGGER.debug("---google distance = {0}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
