@@ -56,7 +56,7 @@ public class DynaRouteServiceController {
             , @RequestParam(value = "officeAddress", required = true) String officeAddress
             , @RequestParam(value = "departureTime", required = false) @DateTimeFormat(pattern="dd/MM/yyyy HH:mm:ss") Date departureTime) {
         TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress, departureTime);
-        if (departureTime.before(new Date())) {
+        if (departureTime != null && departureTime.before(new Date())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Time must not be in the past.");
         }
         else {

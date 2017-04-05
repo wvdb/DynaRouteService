@@ -126,7 +126,7 @@ public class GoogleServiceImpl implements GoogleService {
 
         String httpRequest = uri.toASCIIString();
 
-        LOGGER.debug("--- HTTP request = {}" + httpRequest);
+        LOGGER.debug("--- HTTP request = {}", httpRequest);
 
         HttpGet request = new HttpGet(httpRequest);
 
