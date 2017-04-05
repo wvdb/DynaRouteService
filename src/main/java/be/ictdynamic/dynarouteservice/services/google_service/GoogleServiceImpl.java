@@ -1,9 +1,9 @@
 package be.ictdynamic.dynarouteservice.services.google_service;
 
 import be.ictdynamic.dynarouteservice.DynaRouteServiceConstants;
-import be.ictdynamic.dynarouteservice.domain.GoogleMapRequest;
-import be.ictdynamic.dynarouteservice.domain.GoogleMapResponse;
 import be.ictdynamic.dynarouteservice.domain.GoogleTransportInfo;
+import be.ictdynamic.dynarouteservice.domain.TransportRequest;
+import be.ictdynamic.dynarouteservice.domain.TransportResponse;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -22,15 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Class GoogleMapRealServiceImpl.
+ * Class GoogleServiceImpl.
  *
  * @author Wim Van den Brande
  * @since 04/04/2017 - 20:35
  */
 @Service
-public class GoogleMapServiceImpl implements GoogleMapService {
+public class GoogleServiceImpl implements GoogleService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoogleMapServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoogleServiceImpl.class);
     public static final String GOOGLE_DISTANCE_MATRIX_API_KEY = "AIzaSyDrQxf6ftnF-2xihZBUQkTL6ZEIlgee5WA";
 
     public static final String DRIVING = "driving";
@@ -38,10 +38,10 @@ public class GoogleMapServiceImpl implements GoogleMapService {
     public static final String BICYCLING = "bicycling";
     public static final String TRANSIT = "transit";
 
-    public GoogleMapResponse getGoogleDistance(final GoogleMapRequest googleMapRequest) {
-        GoogleMapResponse googleMapResponse = new GoogleMapResponse();
+    public TransportResponse getGoogleDistance(final TransportRequest transportRequest) {
+        TransportResponse transportResponse = new TransportResponse();
         HashMap<String, GoogleTransportInfo> googleTransportInfoMap = new HashMap<>();
-        googleMapResponse.setTransportInfoMap(new HashMap<>());
+        transportResponse.setTransportInfoMap(new HashMap<>());
 
         List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
 
@@ -49,22 +49,19 @@ public class GoogleMapServiceImpl implements GoogleMapService {
             GoogleTransportInfo googleTransportInfo = null;
             try {
                 // TODO : support for future times
-                googleTransportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(googleMapRequest, transitMode, System.currentTimeMillis() / 1000);
+                googleTransportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, System.currentTimeMillis() / 1000);
                 googleTransportInfoMap.put(transitMode, googleTransportInfo);
             } catch (URISyntaxException e) {
-                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, googleMapRequest);
+                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
             }
         });
 
-        googleMapResponse.setTransportInfoMap(googleTransportInfoMap);
-        return googleMapResponse;
+        transportResponse.setTransportInfoMap(googleTransportInfoMap);
+        return transportResponse;
     }
 
-    private GoogleTransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final GoogleMapRequest googleMapRequest, final String transitMode, final long departureTime) throws URISyntaxException {
-        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "mode = {}, request = {}", transitMode, googleMapRequest);
-
-        GoogleTransportInfo googleTransportInfo = new GoogleTransportInfo();
-        HttpClient client = new DefaultHttpClient();
+    private GoogleTransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final TransportRequest transportRequest, final String transitMode, final long departureTime) throws URISyntaxException {
+        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "mode = {}, request = {}", transitMode, transportRequest);
 
         // Google Distance Matrix API = https://developers.google.com/maps/documentation/distance-matrix/start
 
@@ -107,12 +104,15 @@ public class GoogleMapServiceImpl implements GoogleMapService {
 
         // epoch : https://www.epochconverter.com/
 
+        GoogleTransportInfo googleTransportInfo = new GoogleTransportInfo();
+        HttpClient httpClient = new DefaultHttpClient();
+
         URI uri = new URI(
                 "https",
                 "maps.googleapis.com",
                 "/maps/api/distancematrix/json",
-                          "origins=" + googleMapRequest.homeAddress
-                        + "&destinations=" + googleMapRequest.officeAddress
+                          "origins=" + transportRequest.getHomeAddress()
+                        + "&destinations=" + transportRequest.getOfficeAddress()
                         + "&departure_time=" + departureTime + "&mode=" + transitMode + "&key=" + GOOGLE_DISTANCE_MATRIX_API_KEY,
                 null);
 
@@ -123,11 +123,11 @@ public class GoogleMapServiceImpl implements GoogleMapService {
         HttpGet request = new HttpGet(httpRequest);
 
         try {
-            HttpResponse response = client.execute(request);
-            LOGGER.debug("--- HTTP response = {}" + response);
+            HttpResponse httpResponse = httpClient.execute(request);
+            LOGGER.debug("--- httpResponse = {}" + httpResponse);
 
             // CONVERT RESPONSE TO STRING
-            String stringResult = EntityUtils.toString(response.getEntity());
+            String stringResult = EntityUtils.toString(httpResponse.getEntity());
             LOGGER.debug("--- stringResult = {}" + stringResult);
 
             JSONObject jsonObject = new JSONObject(stringResult);
@@ -148,15 +148,15 @@ public class GoogleMapServiceImpl implements GoogleMapService {
                         JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
                         LOGGER.debug("---google distance = {0}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
 
-                        googleTransportInfo.distance = jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value");
+                        googleTransportInfo.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
                         // when we drive, we use duration_in_traffic to get a more realistic duration
                         if (DRIVING.equals(transitMode)) {
                             LOGGER.debug("---google duration = {0}", jsonElement.getJSONObject("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
-                            googleTransportInfo.duration = jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value");
+                            googleTransportInfo.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
                         }
                         else {
                             LOGGER.debug("---google duration = {0}", jsonElement.getJSONObject("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
-                            googleTransportInfo.duration = jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value");
+                            googleTransportInfo.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
                         }
                     }
                 }
@@ -166,11 +166,11 @@ public class GoogleMapServiceImpl implements GoogleMapService {
             }
 
         } catch (Throwable e) {
-            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, googleMapRequest);
+            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
             return googleTransportInfo;
         }
 
-        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "mode = {}, request = {}, googleTransportInfo = {}", transitMode, googleMapRequest, googleTransportInfo);
+        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "mode = {}, request = {}, googleTransportInfo = {}", transitMode, transportRequest, googleTransportInfo);
         return googleTransportInfo;
     }
 

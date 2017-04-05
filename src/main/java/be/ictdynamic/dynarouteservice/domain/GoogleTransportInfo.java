@@ -15,12 +15,12 @@ public class GoogleTransportInfo implements Serializable {
     // distance in meters
     @Getter
     @Setter
-    public Integer distance;
+    private Integer distance;
 
     // duration in seconds
     @Getter
     @Setter
-    public Integer duration;
+    private Integer duration;
 
     @Override
     public String toString() {

@@ -11,19 +11,19 @@ import java.io.Serializable;
  * @author Wim Van den Brande
  * @since 03/10/2015 - 20:35
  */
-public class GoogleMapRequest implements Serializable {
+public class TransportRequest implements Serializable {
 
     private static final long serialVersionUID = -5073135041934007777L;
 
     @Getter
     @Setter
-    public String officeAddress;
+    private String officeAddress;
 
     @Getter
     @Setter
-    public String homeAddress;
+    private String homeAddress;
 
-    public GoogleMapRequest(String officeAddress, String homeAddress) {
+    public TransportRequest(String officeAddress, String homeAddress) {
         this.officeAddress = officeAddress;
         this.homeAddress = homeAddress;
     }

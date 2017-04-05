@@ -13,5 +13,5 @@ import java.io.Serializable;
 public class DynaRouteServiceResponse implements Serializable {
     @Getter
     @Setter
-    public String dummy1;
+    private String dummy1;
 }

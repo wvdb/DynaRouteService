@@ -9,9 +9,9 @@ import lombok.Setter;
 public class Dummy {
     @Getter
     @Setter
-    public String Voornaam;
+    private String Voornaam;
 
     @Getter
     @Setter
-    public String Achternaam;
+    private String Achternaam;
 }

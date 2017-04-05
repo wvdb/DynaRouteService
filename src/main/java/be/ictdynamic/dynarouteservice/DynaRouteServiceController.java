@@ -1,10 +1,10 @@
 package be.ictdynamic.dynarouteservice;
 
 import be.ictdynamic.dynarouteservice.domain.Dummy;
-import be.ictdynamic.dynarouteservice.domain.GoogleMapRequest;
-import be.ictdynamic.dynarouteservice.domain.GoogleMapResponse;
 import be.ictdynamic.dynarouteservice.domain.Greeting;
-import be.ictdynamic.dynarouteservice.services.google_service.GoogleMapServiceImpl;
+import be.ictdynamic.dynarouteservice.domain.TransportRequest;
+import be.ictdynamic.dynarouteservice.domain.TransportResponse;
+import be.ictdynamic.dynarouteservice.services.google_service.GoogleServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class DynaRouteServiceController {
     private Dummy dummy;
 
     @Autowired
-    private GoogleMapServiceImpl googleMapService;
+    private GoogleServiceImpl googleService;
 
     @ApiOperation(value = "Test method to verify whether the service is up and running.",
             notes = "Accepts commune as a parameter and includes it in the response-message.")
@@ -49,11 +49,11 @@ public class DynaRouteServiceController {
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
 //            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public GoogleMapResponse handleGetRequest(
+    public TransportResponse handleGetRequest(
               @RequestParam(value = "homeAddress", required = true) String homeAddress
             , @RequestParam(value = "officeAddress", required = true) String officeAddress) {
-        GoogleMapRequest googleMapRequest = new GoogleMapRequest(officeAddress, homeAddress);
-        return googleMapService.getGoogleDistance(googleMapRequest);
+        TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress);
+        return googleService.getGoogleDistance(transportRequest);
     }
 
 }

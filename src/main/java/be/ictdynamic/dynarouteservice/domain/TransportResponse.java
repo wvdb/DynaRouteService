@@ -9,8 +9,8 @@ import java.util.HashMap;
  * @author Wim Van den Brande
  * @since 03/10/2015 - 20:35
  */
-public class GoogleMapResponse implements Serializable {
-    // hashmap with key = transport and value = GoogleTransportInfo
+public class TransportResponse implements Serializable {
+    // hashMap with key = transport and value = GoogleTransportInfo
     private HashMap<String, GoogleTransportInfo> transportInfoMap;
 
     public HashMap<String, GoogleTransportInfo> getTransportInfoMap() {
