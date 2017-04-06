@@ -43,6 +43,7 @@ public class GoogleServiceImpl implements GoogleService {
         HashMap<String, GoogleTransportInfo> googleTransportInfoMap = new HashMap<>();
         transportResponse.setTransportInfoMap(new HashMap<>());
 
+        // TODO : to support ALL modes
 //        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
         List<String> transitModes = Arrays.asList(DRIVING);
 
@@ -159,11 +160,11 @@ public class GoogleServiceImpl implements GoogleService {
                         googleTransportInfo.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
                         // when we drive, we use duration_in_traffic to get a more realistic duration
                         if (DRIVING.equals(transitMode)) {
-                            LOGGER.debug("---google duration = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
+                            LOGGER.debug("---google duration in metres = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
                             googleTransportInfo.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
                         }
                         else {
-                            LOGGER.debug("---google duration = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
+                            LOGGER.debug("---google duration in seconds = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
                             googleTransportInfo.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
                         }
                     }

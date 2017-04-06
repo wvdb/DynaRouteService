@@ -7,6 +7,7 @@ import be.ictdynamic.dynarouteservice.domain.TransportRequest;
 import be.ictdynamic.dynarouteservice.services.google_service.GoogleServiceImpl;
 import generated.SystemParameterRequest;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,12 @@ public class DynaRouteServiceController {
             produces = {MediaType.APPLICATION_JSON_VALUE})
 //            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity handleRoute(
-            @RequestParam(value = "homeAddress", required = true) String homeAddress
-            , @RequestParam(value = "officeAddress", required = true) String officeAddress
-            , @RequestParam(value = "departureTime", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") Date departureTime) {
+              @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
+              @RequestParam(value = "homeAddress", required = true) String homeAddress
+            , @ApiParam(value = "Partial or complete Office address. Example: Da Vincilaan 5, Zaventem, België")
+              @RequestParam(value = "officeAddress", required = true) String officeAddress
+            , @ApiParam(value = "Optional time of departure in dd/MM/yyyy HH:mm:ss format. Example: 01/01/2020 17:00:00.")
+              @RequestParam(value = "departureTime", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") Date departureTime) {
         TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress, departureTime);
         if (departureTime != null && departureTime.before(new Date())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Time must not be in the past.");
