@@ -1,5 +1,6 @@
 package be.ictdynamic.dynarouteservice;
 
+import be.ictdynamic.dynarouteservice.domain.SystemParameterConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +36,9 @@ public class DynaRouteServiceControllerTest {
 
     private MockMvc mockMvc;
 
+    @Autowired
+    private SystemParameterConfig systemParameterConfig;
+
     private MediaType contentType = new MediaType(  MediaType.APPLICATION_JSON.getType(),
                                                     MediaType.APPLICATION_JSON.getSubtype(),
                                                     Charset.forName("utf8"));
@@ -49,6 +56,22 @@ public class DynaRouteServiceControllerTest {
                                     .andDo(print())
                                     .andExpect(status().isOk())
                                     .andExpect(content().json("{'content':'You are from Antwerpen!'}"));
-//        assertThat("The content should match", content, is("You are from Antwerpen!"));
     }
+
+    @Test
+    public void updateSystemParameter() throws Exception {
+        String jsonContent = "{\n" +
+                "  \"parameterKey\": \"DUMMY\",\n" +
+                "  \"parameterValue\": \"system parameter DUMMY has been modified\"\n" +
+                "}";
+
+        mockMvc.perform(put("/systemParameters/")
+                .contentType(contentType)
+                .content(jsonContent))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        assertThat("The system parameter DUMMY should have been modified", "system parameter DUMMY has been modified", is(systemParameterConfig.getSystemParameters().get("DUMMY")));
+    }
+
 }

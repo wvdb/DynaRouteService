@@ -13,7 +13,8 @@ public class SystemParameterConfig {
 
     public SystemParameterConfig() {
         systemParameters = new HashMap<>();
-        systemParameters.put("key1", 100);
+        systemParameters.put("DUMMY", "this parameter is being used by a unit test");
+        systemParameters.put("key1", 500);
         systemParameters.put("key2", 500);
         systemParameters.put("key3", 1000);
     }
