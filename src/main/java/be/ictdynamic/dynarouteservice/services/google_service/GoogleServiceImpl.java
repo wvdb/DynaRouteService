@@ -149,21 +149,21 @@ public class GoogleServiceImpl implements GoogleService {
 
                 for (int i = 0; i < jsonArrayRow.length(); i++) {
                     // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
-                    JSONObject jsonoOject2 = jsonArrayRow.getJSONObject(i);
+                    JSONObject jsonObject2 = jsonArrayRow.getJSONObject(i);
 
-                    JSONArray jsonArrayElement = jsonoOject2.getJSONArray("elements");
+                    JSONArray jsonArrayElement = jsonObject2.getJSONArray("elements");
                     for (int j = 0; j < jsonArrayElement.length(); j++) {
                         JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
-                        LOGGER.debug("---google distance = {0}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
+                        LOGGER.debug("---google distance = {}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
 
                         googleTransportInfo.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
                         // when we drive, we use duration_in_traffic to get a more realistic duration
                         if (DRIVING.equals(transitMode)) {
-                            LOGGER.debug("---google duration = {0}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
+                            LOGGER.debug("---google duration = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
                             googleTransportInfo.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
                         }
                         else {
-                            LOGGER.debug("---google duration = {0}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
+                            LOGGER.debug("---google duration = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
                             googleTransportInfo.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
                         }
                     }
