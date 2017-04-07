@@ -47,9 +47,7 @@ public class GoogleServiceImpl implements GoogleService {
         HashMap<String, TransportInfo> googleTransportInfoMap = new HashMap<>();
         transportResponse.setTransportInfoMap(new HashMap<>());
 
-        // TODO : to support ALL modes
-//        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
-        List<String> transitModes = Arrays.asList(DRIVING);
+        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
 
         transitModes.forEach(transitMode -> {
             TransportInfo transportInfo = null;
