@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Wim Van den Brande
  * @since 03/10/2015 - 20:35
  */
-public class GoogleTransportInfo implements Serializable {
+public class TransportInfo implements Serializable {
     // distance in meters
     @Getter
     @Setter
@@ -24,7 +24,7 @@ public class GoogleTransportInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "GoogleTransportInfo{" +
+        return "TransportInfo{" +
                 "distance=" + distance +
                 ", duration=" + duration +
                 '}';

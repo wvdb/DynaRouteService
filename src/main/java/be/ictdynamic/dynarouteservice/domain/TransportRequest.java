@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Class GoogleMapRequest.
+ * Class TransportRequest.
  *
  * @author Wim Van den Brande
  * @since 03/10/2015 - 20:35
@@ -36,7 +36,7 @@ public class TransportRequest implements Serializable {
 
     @Override
     public String toString() {
-        return "GoogleMapRequest{" +
+        return "TransportRequest{" +
                 "officeAddress='" + officeAddress + '\'' +
                 ", homeAddress='" + homeAddress + '\'' +
                 ", departureTime='" + departureTime + '\'' +

@@ -9,6 +9,7 @@ Desciption to be added.
 
 ### Running application locally
 mvn spring-boot:run
+program arguments : --spring.profiles.active=local
 
 ### Running on a docker-based RestClient
 TODO: add  a docker file hosting the restClient
