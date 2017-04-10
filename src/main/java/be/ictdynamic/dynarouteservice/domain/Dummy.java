@@ -14,4 +14,9 @@ public class Dummy {
     @Getter
     @Setter
     private String Achternaam;
+
+    public Dummy(String voornaam, String achternaam) {
+        Voornaam = voornaam;
+        Achternaam = achternaam;
+    }
 }

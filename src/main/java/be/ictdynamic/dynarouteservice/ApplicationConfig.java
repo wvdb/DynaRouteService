@@ -14,7 +14,7 @@ public class ApplicationConfig {
 
     @Bean
     public Dummy dummy() {
-        return new Dummy();
+        return new Dummy("this", "is a test");
     }
 
 }

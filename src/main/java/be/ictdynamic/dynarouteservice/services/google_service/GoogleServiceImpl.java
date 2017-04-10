@@ -41,7 +41,6 @@ public class GoogleServiceImpl implements GoogleService {
     public static final String BICYCLING = "bicycling";
     public static final String TRANSIT = "transit";
 
-
     public TransportResponse getGoogleDistance(final TransportRequest transportRequest) {
         TransportResponse transportResponse = new TransportResponse();
         HashMap<String, TransportInfo> googleTransportInfoMap = new HashMap<>();

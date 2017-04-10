@@ -17,8 +17,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @RestController
 public class DynaRouteServiceController {
@@ -44,6 +47,17 @@ public class DynaRouteServiceController {
     public ResponseEntity greeting(@RequestParam(value = "commune", required = true, defaultValue = "Edegem") String commune) {
         String greetingText = String.format(TEMPLATE, commune);
         LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + " Greeting, text = " + greetingText);
+
+        Dummy dummy1 = new Dummy("wim", "van den brande");
+        Dummy dummy2 = new Dummy("kaat", "frison");
+        Dummy dummy3 = new Dummy("donald", "trump");
+        List<Dummy> dummies = new ArrayList<>();
+        dummies.add(dummy1);
+        dummies.add(dummy2);
+        dummies.add(dummy3);
+        List<String> voornamen1 = dummies.stream().map(dummy -> dummy.getVoornaam()).collect(Collectors.toList());
+        List<String> voornamen2 = dummies.stream().map(Dummy::getVoornaam).collect(Collectors.toList());
+
         LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + " Greeting");
         return ResponseEntity.ok(new Greeting(COUNTER.incrementAndGet(), greetingText));
     }
@@ -55,9 +69,9 @@ public class DynaRouteServiceController {
             produces = {MediaType.APPLICATION_JSON_VALUE})
 //            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity handleRoute(
-              @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
+              @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, BelgiÃ«")
               @RequestParam(value = "homeAddress", required = true) String homeAddress
-            , @ApiParam(value = "Partial or complete Office address. Example: Da Vincilaan 5, Zaventem, België")
+            , @ApiParam(value = "Partial or complete Office address. Example: Da Vincilaan 5, Zaventem, BelgiÃ«")
               @RequestParam(value = "officeAddress", required = true) String officeAddress
             , @ApiParam(value = "Optional time of departure in dd/MM/yyyy HH:mm:ss format. Example: 01/01/2020 17:00:00.")
               @RequestParam(value = "departureTime", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") Date departureTime) {
