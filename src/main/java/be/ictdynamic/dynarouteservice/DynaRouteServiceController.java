@@ -1,9 +1,6 @@
 package be.ictdynamic.dynarouteservice;
 
-import be.ictdynamic.dynarouteservice.domain.Dummy;
-import be.ictdynamic.dynarouteservice.domain.Greeting;
-import be.ictdynamic.dynarouteservice.domain.SystemParameterConfig;
-import be.ictdynamic.dynarouteservice.domain.TransportRequest;
+import be.ictdynamic.dynarouteservice.domain.*;
 import be.ictdynamic.dynarouteservice.services.google_service.GoogleServiceImpl;
 import generated.SystemParameterRequest;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -80,6 +78,39 @@ public class DynaRouteServiceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Time must not be in the past.");
         } else {
             return ResponseEntity.ok(googleService.getGoogleDistance(transportRequest));
+        }
+    }
+
+    @ApiOperation(value = "Business method to retrieve shortest and fastest route when driving.",
+            notes = "Duration is in seconds.")
+    @RequestMapping(value = "/fastestAndSlowestRoute",
+            method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity handleFastestAndSlowestRoute(
+            @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
+            @RequestParam(value = "homeAddress", required = true) String homeAddress
+            , @ApiParam(value = "Partial or complete Office address. Example: Da Vincilaan 5, Zaventem, België")
+            @RequestParam(value = "officeAddress", required = true) String officeAddress
+            , @ApiParam(value = "Time of departure in dd/MM/yyyy HH:mm:ss format. Example: 01/01/2020 17:00:00.")
+            @RequestParam(value = "departureTime", required = true) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") Date departureTime
+            , @ApiParam(value = "Number of departureTime the be processed. Default = 336 (2 per hour, 24 hours, 7 days)")
+            @RequestParam(value = "numberOfDepartureTimesToBeProcessed", required = false, defaultValue = "336") Integer numberOfDepartureTimesToBeProcessed) {
+        TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress, departureTime, numberOfDepartureTimesToBeProcessed);
+        if (departureTime.before(new Date())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Time must not be in the past.");
+        } else {
+            TransportResponseFastestSlowest transportResponseFastestSlowest = googleService.getGoogleDistanceFastestAndSlowest(transportRequest);
+
+            // only return 5 fastest and 5 slowest routes
+            Collections.sort(transportResponseFastestSlowest.getRoutes(), (route1, route2) -> route1.getRouteDuration().compareTo(route2.getRouteDuration()));
+            transportResponseFastestSlowest.setFastestRoutes(transportResponseFastestSlowest.getRoutes().stream().limit(5).collect(Collectors.toList()));
+
+            Collections.sort(transportResponseFastestSlowest.getRoutes(), (route1, route2) -> route2.getRouteDuration().compareTo(route1.getRouteDuration()));
+            transportResponseFastestSlowest.setSlowestRoutes(transportResponseFastestSlowest.getRoutes().stream().limit(5).collect(Collectors.toList()));
+
+            transportResponseFastestSlowest.setRoutes(null);
+
+            return ResponseEntity.ok(transportResponseFastestSlowest);
         }
     }
 
