@@ -1,28 +1,19 @@
 package be.ictdynamic.dynarouteservice.domain;
 
-public class Greeting {
+import lombok.Getter;
+import lombok.Setter;
 
+public class Greeting {
+    @Getter
+    @Setter
     private long id;
+
+    @Getter
+    @Setter
     private String content;
 
     public Greeting(long id, String content) {
         this.id = id;
-        this.content = content;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setContent(String content) {
         this.content = content;
     }
 }
