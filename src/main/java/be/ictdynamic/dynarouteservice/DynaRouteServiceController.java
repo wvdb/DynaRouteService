@@ -125,17 +125,17 @@ public class DynaRouteServiceController {
 
     @ApiOperation(value = "Admin method to update the value of a system parameter used by the DynaRouteService application.",
             notes = "This method may be executed by authorized personnel only.")
-    @RequestMapping(value = "/systemParameters",
+    @RequestMapping(value = "/systemParameters/{parameterKey}",
             method = RequestMethod.PUT,
             consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity updateSystemParameter(@RequestBody SystemParameterRequest request) {
-        if (systemParameterConfig.getSystemParameters().containsKey(request.getParameterKey())) {
-            systemParameterConfig.getSystemParameters().put(request.getParameterKey(), request.getParameterValue());
+    public ResponseEntity updateSystemParameter(@RequestBody SystemParameterRequest request, @PathVariable("parameterKey") String parameterKey) {
+        if (systemParameterConfig.getSystemParameters().containsKey(parameterKey)) {
+            systemParameterConfig.getSystemParameters().put(parameterKey, request.getParameterValue());
             return ResponseEntity.ok(null);
         }
         else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Key of parameter is invalid.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s is not a valid parameter key.", parameterKey));
         }
     }
 
