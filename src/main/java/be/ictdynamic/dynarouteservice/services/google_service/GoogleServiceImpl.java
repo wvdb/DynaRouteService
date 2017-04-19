@@ -4,6 +4,7 @@ import be.ictdynamic.dynarouteservice.DynaRouteServiceConstants;
 import be.ictdynamic.dynarouteservice.domain.TransportInfo;
 import be.ictdynamic.dynarouteservice.domain.TransportRequest;
 import be.ictdynamic.dynarouteservice.domain.TransportResponse;
+import be.ictdynamic.dynarouteservice.domain.TransportResponseFastestSlowest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -18,9 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Class GoogleServiceImpl.
@@ -59,7 +59,7 @@ public class GoogleServiceImpl implements GoogleService {
                 else {
                     departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
                 }
-                transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong);
+                transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, null);
                 googleTransportInfoMap.put(transitMode, transportInfo);
             } catch (URISyntaxException e) {
                 LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
@@ -70,8 +70,40 @@ public class GoogleServiceImpl implements GoogleService {
         return transportResponse;
     }
 
-    private TransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final TransportRequest transportRequest, final String transitMode, final long departureTime) throws URISyntaxException {
-        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "mode = {}, request = {}", transitMode, transportRequest);
+    public TransportResponseFastestSlowest getGoogleDistanceFastestAndSlowest(final TransportRequest transportRequest) {
+        TransportResponseFastestSlowest transportResponseFastestSlowest = new TransportResponseFastestSlowest();
+        transportResponseFastestSlowest.setFastestRoutes(new ArrayList<>(5));
+        transportResponseFastestSlowest.setSlowestRoutes(new ArrayList<>(5));
+        transportResponseFastestSlowest.setRoutes(new ArrayList<>(336));
+
+        List<String> transitModes = Collections.singletonList(DRIVING);
+
+        transitModes.forEach(transitMode -> {
+            long departTimeLong;
+            departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
+            for (int i = 1; i <= transportRequest.getNumberOfDepartureTimesToBeProcessed(); i++) {
+                TransportInfo transportInfo = null;
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                    String routeDateAsString = sdf.format(new Date(departTimeLong * 1000));
+                    transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, routeDateAsString);
+
+                    TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration());
+                    transportResponseFastestSlowest.getRoutes().add(transportResponseDetailsFastestSlowest);
+
+                    // increase departure Time with 1800 seconds for next processing
+                    departTimeLong += 1800;
+                } catch (URISyntaxException e) {
+                    LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+                }
+            }
+        });
+
+        return transportResponseFastestSlowest;
+    }
+
+    private TransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final TransportRequest transportRequest, final String transitMode, final long departureTime, String departureTimeAsString) throws URISyntaxException {
+        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "mode = {}, request = {}, departureTimeAsString = {}", transitMode, transportRequest, departureTimeAsString);
 
         // Google Distance Matrix API = https://developers.google.com/maps/documentation/distance-matrix/start
 

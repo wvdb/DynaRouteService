@@ -61,11 +61,10 @@ public class DynaRouteServiceControllerTest {
     @Test
     public void updateSystemParameter() throws Exception {
         String jsonContent = "{\n" +
-                "  \"parameterKey\": \"DUMMY\",\n" +
                 "  \"parameterValue\": \"system parameter DUMMY has been modified\"\n" +
                 "}";
 
-        mockMvc.perform(put("/systemParameters/")
+        mockMvc.perform(put("/systemParameters/DUMMY")
                 .contentType(contentType)
                 .content(jsonContent))
                 .andDo(print())

@@ -28,10 +28,21 @@ public class TransportRequest implements Serializable {
     @Setter
     private Date departureTime;
 
+    @Getter
+    @Setter
+    private Integer numberOfDepartureTimesToBeProcessed;
+
     public TransportRequest(String officeAddress, String homeAddress, Date departureTime) {
         this.officeAddress = officeAddress;
         this.homeAddress = homeAddress;
         this.departureTime = departureTime;
+    }
+
+    public TransportRequest(String officeAddress, String homeAddress, Date departureTime, Integer numberOfDepartureTimesToBeProcessed) {
+        this.officeAddress = officeAddress;
+        this.homeAddress = homeAddress;
+        this.departureTime = departureTime;
+        this.numberOfDepartureTimesToBeProcessed = numberOfDepartureTimesToBeProcessed;
     }
 
     @Override
@@ -40,6 +51,7 @@ public class TransportRequest implements Serializable {
                 "officeAddress='" + officeAddress + '\'' +
                 ", homeAddress='" + homeAddress + '\'' +
                 ", departureTime='" + departureTime + '\'' +
+                ", numberOfDepartureTimesToBeProcessed='" + numberOfDepartureTimesToBeProcessed + '\'' +
                 '}';
     }
 }

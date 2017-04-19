@@ -3,7 +3,7 @@
     <xs:element name="systemParameterRequest">
         <xs:complexType>
             <xs:sequence>
-                <xs:element type="xs:string" name="parameterKey"/>
+                <!--<xs:element type="xs:string" name="parameterKey"/>-->
                 <xs:element type="xs:string" name="parameterValue"/>
             </xs:sequence>
         </xs:complexType>
