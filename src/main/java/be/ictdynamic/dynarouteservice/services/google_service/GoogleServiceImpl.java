@@ -84,11 +84,11 @@ public class GoogleServiceImpl implements GoogleService {
             for (int i = 1; i <= transportRequest.getNumberOfDepartureTimesToBeProcessed(); i++) {
                 TransportInfo transportInfo = null;
                 try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     String routeDateAsString = sdf.format(new Date(departTimeLong * 1000));
                     transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, routeDateAsString);
 
-                    TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration());
+                    TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration(), transportInfo.getDurationAsText());
                     transportResponseFastestSlowest.getRoutes().add(transportResponseDetailsFastestSlowest);
 
                     // increase departure Time with 1800 seconds for next processing
@@ -96,6 +96,43 @@ public class GoogleServiceImpl implements GoogleService {
                 } catch (URISyntaxException e) {
                     LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
                 }
+            }
+        });
+
+        return transportResponseFastestSlowest;
+    }
+
+    public TransportResponseFastestSlowest getFastestRouteForEachDayOfTheWeek(final TransportRequest transportRequest) {
+        TransportResponseFastestSlowest transportResponseFastestSlowest = new TransportResponseFastestSlowest();
+
+        List<String> transitModes = Collections.singletonList(DRIVING);
+
+        transitModes.forEach(transitMode -> {
+            long departTimeLong;
+            departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
+            for (int day = 1; day <= 7; day++) {
+                // processing per day
+                transportResponseFastestSlowest.setRoutes(new ArrayList<>(48));
+                // retrieve fastest route for every half an hour
+                for (int i = 1; i <= 48; i++) {
+                    TransportInfo transportInfo = null;
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                        String routeDateAsString = sdf.format(new Date(departTimeLong * 1000));
+                        transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, routeDateAsString);
+
+                        TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration(), transportInfo.getDurationAsText());
+                        transportResponseFastestSlowest.getRoutes().add(transportResponseDetailsFastestSlowest);
+
+                        // increase departure Time with 1800 seconds / half an hour for next processing
+                        departTimeLong += 1800;
+                    } catch (URISyntaxException e) {
+                        LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+                    }
+                }
+                // end of the day, let's pick the fastest time-slot for this day
+                Collections.sort(transportResponseFastestSlowest.getRoutes(), (route1, route2) -> route1.getRouteDuration().compareTo(route2.getRouteDuration()));
+                transportResponseFastestSlowest.getFastestRoutesPerDay().put("Day " + day, transportResponseFastestSlowest.getRoutes().stream().limit(1).findFirst().get());
             }
         });
 
@@ -195,10 +232,12 @@ public class GoogleServiceImpl implements GoogleService {
                         if (DRIVING.equals(transitMode)) {
                             LOGGER.debug("---google duration in metres = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
                             transportInfo.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
+                            transportInfo.setDurationAsText(jsonElement.opt("duration_in_traffic") == null ? "" : (String) jsonElement.getJSONObject("duration_in_traffic").get("text"));
                         }
                         else {
                             LOGGER.debug("---google duration in seconds = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
                             transportInfo.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
+                            transportInfo.setDurationAsText(jsonElement.opt("duration") == null ? "" : (String) jsonElement.getJSONObject("duration").get("text"));
                         }
                     }
                 }

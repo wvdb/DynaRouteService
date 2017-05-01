@@ -5,7 +5,9 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class TransportResponseFastestSlowest.
@@ -26,6 +28,20 @@ public class TransportResponseFastestSlowest implements Serializable {
     @Setter
     private List<TransportResponseDetailsFastestSlowest> routes;
 
+    private Map<String, TransportResponseDetailsFastestSlowest> fastestRoutesPerDay;
+
+    public Map<String, TransportResponseDetailsFastestSlowest> getFastestRoutesPerDay() {
+        if (fastestRoutesPerDay == null) {
+            // TODO hashmap is not sorted
+            fastestRoutesPerDay = new HashMap<>();
+        }
+        return fastestRoutesPerDay;
+    }
+
+    public void setFastestRoutesPerDay(Map<String, TransportResponseDetailsFastestSlowest> fastestRoutesPerDay) {
+        this.fastestRoutesPerDay = fastestRoutesPerDay;
+    }
+
     static public class TransportResponseDetailsFastestSlowest {
         @Getter
         @Setter
@@ -39,10 +55,15 @@ public class TransportResponseFastestSlowest implements Serializable {
         @Setter
         private Integer routeDuration;
 
-        public TransportResponseDetailsFastestSlowest(Date routeDate, String routeDateAsString, Integer routeDuration) {
+        @Getter
+        @Setter
+        private String routeDurationAsText;
+
+        public TransportResponseDetailsFastestSlowest(Date routeDate, String routeDateAsString, Integer routeDuration, String routeDurationAsText) {
             this.routeDate = routeDate;
             this.routeDateAsString = routeDateAsString;
             this.routeDuration = routeDuration;
+            this.routeDurationAsText = routeDurationAsText;
         }
     }
 }

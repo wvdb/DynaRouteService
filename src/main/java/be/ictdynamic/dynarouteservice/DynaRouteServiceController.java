@@ -81,7 +81,7 @@ public class DynaRouteServiceController {
         }
     }
 
-    @ApiOperation(value = "Business method to retrieve shortest and fastest route when driving.",
+    @ApiOperation(value = "Business method (transitMode = driving) to retrieve fastest and slowest route within a time-frame.",
             notes = "Duration is in seconds.")
     @RequestMapping(value = "/fastestAndSlowestRoute",
             method = RequestMethod.GET,
@@ -107,6 +107,30 @@ public class DynaRouteServiceController {
 
             Collections.sort(transportResponseFastestSlowest.getRoutes(), (route1, route2) -> route2.getRouteDuration().compareTo(route1.getRouteDuration()));
             transportResponseFastestSlowest.setSlowestRoutes(transportResponseFastestSlowest.getRoutes().stream().limit(5).collect(Collectors.toList()));
+
+            transportResponseFastestSlowest.setRoutes(null);
+
+            return ResponseEntity.ok(transportResponseFastestSlowest);
+        }
+    }
+
+    @ApiOperation(value = "Business method (transitMode = driving) to retrieve fastest route for each day of the week.",
+            notes = "Duration is in seconds.")
+    @RequestMapping(value = "/fastestRouteForEachDayOfTheWeek",
+            method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity handleFastestRouteForEachDayOfTheWeek(
+            @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
+            @RequestParam(value = "homeAddress", required = true) String homeAddress
+            , @ApiParam(value = "Partial or complete Office address. Example: Da Vincilaan 5, Zaventem, België")
+            @RequestParam(value = "officeAddress", required = true) String officeAddress
+            , @ApiParam(value = "Date of departure in dd/MM/yyyy format. Example: 01/01/2020")
+            @RequestParam(value = "departureTime", required = true) @DateTimeFormat(pattern = "dd/MM/yyyy") Date departureDate) {
+        TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress, departureDate, null);
+        if (departureDate.before(new Date())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Date must not be in the past.");
+        } else {
+            TransportResponseFastestSlowest transportResponseFastestSlowest = googleService.getFastestRouteForEachDayOfTheWeek(transportRequest);
 
             transportResponseFastestSlowest.setRoutes(null);
 

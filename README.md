@@ -15,3 +15,5 @@ program arguments : --spring.profiles.active=local
 TODO: add  a docker file hosting the restClient
 docker-compose up
 
+### Swagger
+http://localhost:8088/dyna-route-service/swagger-ui.html

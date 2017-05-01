@@ -22,6 +22,11 @@ public class TransportInfo implements Serializable {
     @Setter
     private Integer duration;
 
+    // duration as text
+    @Getter
+    @Setter
+    private String durationAsText;
+
     @Override
     public String toString() {
         return "TransportInfo{" +

@@ -30,12 +30,12 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("DynaRouteService Api")
-                .description("Hier steht die Beschreibung der Api")
+//                .description("Hier steht die Beschreibung der Api")
                 .termsOfServiceUrl("http://springfox.io")
                 .contact(new Contact("Wim Van den Brande", "www.ictdynamic.be", "info@ictdynamic.be"))
-                .license("Apache License Version 2.0")
+//                .license("Apache License Version 2.0")
                 .licenseUrl("https://github.com/springfox/springfox/blob/master/LICENSE")
-                .version("2.0")
+                .version("0.2")
                 .build();
     }
 }
