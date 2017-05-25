@@ -114,7 +114,7 @@ public class DynaRouteServiceController {
         }
     }
 
-    @ApiOperation(value = "Business method (transitMode = driving) to retrieve fastest route for each day of the week.",
+    @ApiOperation(value = "Business method (transitMode = driving) to retrieve fastest and slowest route for each day of the week.",
             notes = "Duration is in seconds.")
     @RequestMapping(value = "/fastestRouteForEachDayOfTheWeek",
             method = RequestMethod.GET,
@@ -130,7 +130,9 @@ public class DynaRouteServiceController {
         if (departureDate.before(new Date())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Date must not be in the past.");
         } else {
-            TransportResponseFastestSlowest transportResponseFastestSlowest = googleService.getFastestRouteForEachDayOfTheWeek(transportRequest);
+            TransportResponseFastestSlowest transportResponseFastestSlowest = new TransportResponseFastestSlowest();
+
+            googleService.getFastestAndSlowestRouteForEachDayOfTheWeek(transportRequest, transportResponseFastestSlowest);
 
             transportResponseFastestSlowest.setRoutes(null);
 

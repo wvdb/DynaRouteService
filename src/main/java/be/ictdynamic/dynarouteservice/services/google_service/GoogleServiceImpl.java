@@ -102,9 +102,7 @@ public class GoogleServiceImpl implements GoogleService {
         return transportResponseFastestSlowest;
     }
 
-    public TransportResponseFastestSlowest getFastestRouteForEachDayOfTheWeek(final TransportRequest transportRequest) {
-        TransportResponseFastestSlowest transportResponseFastestSlowest = new TransportResponseFastestSlowest();
-
+    public void getFastestAndSlowestRouteForEachDayOfTheWeek(final TransportRequest transportRequest, TransportResponseFastestSlowest transportResponseFastestSlowest) {
         List<String> transitModes = Collections.singletonList(DRIVING);
 
         transitModes.forEach(transitMode -> {
@@ -127,16 +125,18 @@ public class GoogleServiceImpl implements GoogleService {
                         // increase departure Time with 1800 seconds / half an hour for next processing
                         departTimeLong += 1800;
                     } catch (URISyntaxException e) {
-                        LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+                        LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getFastestAndSlowestRouteForEachDayOfTheWeek : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
                     }
                 }
-                // end of the day, let's pick the fastest time-slot for this day
+                // end of the day
+                // let's pick the fastest time-slot for this day
                 Collections.sort(transportResponseFastestSlowest.getRoutes(), (route1, route2) -> route1.getRouteDuration().compareTo(route2.getRouteDuration()));
                 transportResponseFastestSlowest.getFastestRoutesPerDay().put("Day " + day, transportResponseFastestSlowest.getRoutes().stream().limit(1).findFirst().get());
+                // let's pick the slowest time-slot for this day
+                Collections.sort(transportResponseFastestSlowest.getRoutes(), (route1, route2) -> route2.getRouteDuration().compareTo(route1.getRouteDuration()));
+                transportResponseFastestSlowest.getSlowestRoutesPerDay().put("Day " + day, transportResponseFastestSlowest.getRoutes().stream().limit(1).findFirst().get());
             }
         });
-
-        return transportResponseFastestSlowest;
     }
 
     private TransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final TransportRequest transportRequest, final String transitMode, final long departureTime, String departureTimeAsString) throws URISyntaxException {

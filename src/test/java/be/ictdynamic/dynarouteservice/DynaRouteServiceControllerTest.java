@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * Created by wvdbrand on 3/04/2017.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = DynarouteserviceApplication.class)
+@SpringBootTest(classes = DynaRouteServiceApplication.class)
 @WebAppConfiguration
 public class DynaRouteServiceControllerTest {
 

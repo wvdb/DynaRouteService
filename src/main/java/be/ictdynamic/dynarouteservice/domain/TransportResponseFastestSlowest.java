@@ -30,11 +30,22 @@ public class TransportResponseFastestSlowest implements Serializable {
 
     private Map<String, TransportResponseDetailsFastestSlowest> fastestRoutesPerDay;
 
+    private Map<String, TransportResponseDetailsFastestSlowest> slowestRoutesPerDay;
+
     public Map<String, TransportResponseDetailsFastestSlowest> getFastestRoutesPerDay() {
         if (fastestRoutesPerDay == null) {
+            // we want linkedhashmap because of insertion-order
             fastestRoutesPerDay = new LinkedHashMap<>();
         }
         return fastestRoutesPerDay;
+    }
+
+    public Map<String, TransportResponseDetailsFastestSlowest> getSlowestRoutesPerDay() {
+        if (slowestRoutesPerDay == null) {
+            // we want linkedhashmap because of insertion-order
+            slowestRoutesPerDay = new LinkedHashMap<>();
+        }
+        return slowestRoutesPerDay;
     }
 
     public void setFastestRoutesPerDay(Map<String, TransportResponseDetailsFastestSlowest> fastestRoutesPerDay) {
