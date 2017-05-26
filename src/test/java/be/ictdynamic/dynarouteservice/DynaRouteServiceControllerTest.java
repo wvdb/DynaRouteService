@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * Created by wvdbrand on 3/04/2017.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = DynaRouteServiceApplication.class)
+@SpringBootTest(classes = DynarouteserviceApplication.class)
 @WebAppConfiguration
 public class DynaRouteServiceControllerTest {
 
@@ -56,6 +56,26 @@ public class DynaRouteServiceControllerTest {
                                     .andDo(print())
                                     .andExpect(status().isOk())
                                     .andExpect(content().json("{'content':'You are from Antwerpen!'}"));
+    }
+
+    @Test
+    public void isTagValidHappyFlow() throws Exception {
+        mockMvc.perform(get("/tags/")
+                .param("stringOfTags", "[({}){[{}]}]")
+                .contentType(contentType))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{'stringValid':true}"));
+    }
+
+    @Test
+    public void isTagValidSadFlow() throws Exception {
+        mockMvc.perform(get("/tags/")
+                .param("stringOfTags", "[({}){[{}}]")
+                .contentType(contentType))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{'stringValid':false}"));
     }
 
     @Test
