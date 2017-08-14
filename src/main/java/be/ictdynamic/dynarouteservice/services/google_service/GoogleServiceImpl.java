@@ -43,10 +43,13 @@ public class GoogleServiceImpl implements GoogleService {
 
     public TransportResponse getGoogleDistance(final TransportRequest transportRequest) {
         TransportResponse transportResponse = new TransportResponse();
+
         HashMap<String, TransportInfo> googleTransportInfoMap = new HashMap<>();
         transportResponse.setTransportInfoMap(new HashMap<>());
 
         List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
+
+        // part  1 - retrieve duration and distance for 4 different modes
 
         transitModes.forEach(transitMode -> {
             TransportInfo transportInfo = null;
@@ -54,19 +57,45 @@ public class GoogleServiceImpl implements GoogleService {
                 long departTimeLong;
                 // if departureTime is unknown, we use system date as default
                 if (transportRequest.getDepartureTime() == null) {
-                    departTimeLong = System.currentTimeMillis() / 1000;
+                    departTimeLong = System.currentTimeMillis();
                 }
                 else {
-                    departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
+                    departTimeLong = transportRequest.getDepartureTime().getTime();
                 }
-                transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, null);
+
+                transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong);
                 googleTransportInfoMap.put(transitMode, transportInfo);
             } catch (URISyntaxException e) {
-                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistance : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
             }
         });
 
         transportResponse.setTransportInfoMap(googleTransportInfoMap);
+
+        // part  2 - retrieve latitude and longitude of Home Address
+
+        Map<String, Double> mapWithLatitudeAndLongitude = transportResponse.getMapWithLatitudeAndLongitude();
+
+        try {
+            Map<String, Double> mapWithLatitudeAndLongitudeOfHomeAddress = this.getLatitudeAndLongitude(transportRequest.getHomeAddress());
+            mapWithLatitudeAndLongitude.put("address1.lat", mapWithLatitudeAndLongitudeOfHomeAddress.get("lat"));
+            mapWithLatitudeAndLongitude.put("address1.lng", mapWithLatitudeAndLongitudeOfHomeAddress.get("lng"));
+        } catch (URISyntaxException e) {
+            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistance : message = {}, mode = {}, address = {}", e.getMessage(), transportRequest.getHomeAddress());
+        }
+
+        // part  3 - retrieve latitude and longitude of Office Address
+
+        try {
+            Map<String, Double> mapWithLatitudeAndLongitudeOfHomeAddress = this.getLatitudeAndLongitude(transportRequest.getOfficeAddress());
+            mapWithLatitudeAndLongitude.put("address2.lat", mapWithLatitudeAndLongitudeOfHomeAddress.get("lat"));
+            mapWithLatitudeAndLongitude.put("address2.lng", mapWithLatitudeAndLongitudeOfHomeAddress.get("lng"));
+        } catch (URISyntaxException e) {
+            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistance : message = {}, mode = {}, address = {}", e.getMessage(), transportRequest.getHomeAddress());
+        }
+
+        transportResponse.setMapWithLatitudeAndLongitude(mapWithLatitudeAndLongitude);
+
         return transportResponse;
     }
 
@@ -79,20 +108,20 @@ public class GoogleServiceImpl implements GoogleService {
         List<String> transitModes = Collections.singletonList(DRIVING);
 
         transitModes.forEach(transitMode -> {
-            long departTimeLong;
-            departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
+            long departTimeLong = transportRequest.getDepartureTime().getTime();
+
             for (int i = 1; i <= transportRequest.getNumberOfDepartureTimesToBeProcessed(); i++) {
                 TransportInfo transportInfo = null;
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                    String routeDateAsString = sdf.format(new Date(departTimeLong * 1000));
-                    transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, routeDateAsString);
+                    String routeDateAsString = sdf.format(transportRequest.getDepartureTime().getTime());
+                    transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong);
 
                     TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration(), transportInfo.getDurationAsText());
                     transportResponseFastestSlowest.getRoutes().add(transportResponseDetailsFastestSlowest);
 
-                    // increase departure Time with 1800 seconds for next processing
-                    departTimeLong += 1800;
+                    // increase departure Time with 1800 seconds / half an hour for next processing
+                    departTimeLong += 1800 * 1000;
                 } catch (URISyntaxException e) {
                     LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
                 }
@@ -102,28 +131,38 @@ public class GoogleServiceImpl implements GoogleService {
         return transportResponseFastestSlowest;
     }
 
-    public void getFastestAndSlowestRouteForEachDayOfTheWeek(final TransportRequest transportRequest, TransportResponseFastestSlowest transportResponseFastestSlowest) {
+    public TransportResponseFastestSlowest getFastestAndSlowestRouteForEachDayOfTheWeek(final TransportRequest transportRequest, Integer numberOfDaysToBeProcessed, Integer granularityInMinutes) {
+        TransportResponseFastestSlowest transportResponseFastestSlowest = new TransportResponseFastestSlowest();
+
         List<String> transitModes = Collections.singletonList(DRIVING);
 
         transitModes.forEach(transitMode -> {
             long departTimeLong;
-            departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
-            for (int day = 1; day <= 7; day++) {
+            departTimeLong = transportRequest.getDepartureTime().getTime();
+            for (int day = 1; day <= numberOfDaysToBeProcessed; day++) {
                 // processing per day
                 transportResponseFastestSlowest.setRoutes(new ArrayList<>(48));
-                // retrieve fastest route for every half an hour
-                for (int i = 1; i <= 48; i++) {
+                // retrieve fastest route for every timeslot
+                // granularityInMinutes = 30 => # timeslots = 48
+                // granularityInMinutes = 60 => # timeslots = 24
+                // granularityInMinutes = 120 => # timeslots = 12
+                for (int timeSlotCounter = 1; timeSlotCounter <= (24 * 60) / granularityInMinutes; timeSlotCounter++) {
                     TransportInfo transportInfo = null;
                     try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                        String routeDateAsString = sdf.format(new Date(departTimeLong * 1000));
-                        transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, routeDateAsString);
+                        // TODO : to make more flexible (now we skip first 16 quarters and last 16 quarters)
+                        if (timeSlotCounter>24 && timeSlotCounter<72) {
+                            transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong);
 
-                        TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration(), transportInfo.getDurationAsText());
-                        transportResponseFastestSlowest.getRoutes().add(transportResponseDetailsFastestSlowest);
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                            String routeDateAsString = sdf.format(new Date(departTimeLong * 1000));
 
-                        // increase departure Time with 1800 seconds / half an hour for next processing
-                        departTimeLong += 1800;
+                            TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration(), transportInfo.getDurationAsText());
+                            transportResponseFastestSlowest.getRoutes().add(transportResponseDetailsFastestSlowest);
+                        }
+
+                        // increase departure Time with X seconds / for next processing
+                        // example : increase departure Time with 1800 seconds / half an hour for next processing
+                        departTimeLong += granularityInMinutes * 60 * 1000;
                     } catch (URISyntaxException e) {
                         LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getFastestAndSlowestRouteForEachDayOfTheWeek : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
                     }
@@ -137,12 +176,18 @@ public class GoogleServiceImpl implements GoogleService {
                 transportResponseFastestSlowest.getSlowestRoutesPerDay().put("Day " + day, transportResponseFastestSlowest.getRoutes().stream().limit(1).findFirst().get());
             }
         });
+        return transportResponseFastestSlowest;
     }
 
-    private TransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final TransportRequest transportRequest, final String transitMode, final long departureTime, String departureTimeAsString) throws URISyntaxException {
+    private TransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final TransportRequest transportRequest, final String transitMode, final long departureTime) throws URISyntaxException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String departureTimeAsString = sdf.format(new Date(departureTime));
+
         LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "mode = {}, request = {}, departureTimeAsString = {}", transitMode, transportRequest, departureTimeAsString);
 
-        // Google Distance Matrix API = https://developers.google.com/maps/documentation/distance-matrix/start
+        // Google Distance Matrix API:
+        //   https://developers.google.com/maps/documentation/distance-matrix/start
+        //   https://developers.google.com/maps/documentation/distance-matrix/intro
 
         // example of a request:
 
@@ -186,13 +231,16 @@ public class GoogleServiceImpl implements GoogleService {
         TransportInfo transportInfo = new TransportInfo();
         HttpClient httpClient = new DefaultHttpClient();
 
+        String departureTimeParameter = transitMode.equals("transit") ? "" : "&departure_time=" + departureTime;
+        String transitModeParameter = transitMode.equals("transit") ? "&train=" : "";
+
         URI uri = new URI(
                 "https",
                 "maps.googleapis.com",
                 "/maps/api/distancematrix/json",
-                          "origins=" + transportRequest.getHomeAddress()
+                "origins=" + transportRequest.getHomeAddress()
                         + "&destinations=" + transportRequest.getOfficeAddress()
-                        + "&departure_time=" + departureTime + "&mode=" + transitMode + "&key=" + GOOGLE_DISTANCE_MATRIX_API_KEY,
+                        + departureTimeParameter + "&mode=" + transitMode + transitModeParameter + "&key=" + GOOGLE_DISTANCE_MATRIX_API_KEY,
                 null);
 
         String httpRequest = uri.toASCIIString();
@@ -228,11 +276,12 @@ public class GoogleServiceImpl implements GoogleService {
                         LOGGER.debug("---google distance = {}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
 
                         transportInfo.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
-                        // when we drive, we use duration_in_traffic to get a more realistic duration
+                        // when we drive, we use duration_in_traffic (if available) to get a more realistic duration
                         if (DRIVING.equals(transitMode)) {
-                            LOGGER.debug("---google duration in metres = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
-                            transportInfo.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
-                            transportInfo.setDurationAsText(jsonElement.opt("duration_in_traffic") == null ? "" : (String) jsonElement.getJSONObject("duration_in_traffic").get("text"));
+                            Object googleDurationDriving = jsonElement.opt("duration_in_traffic") == null ? jsonElement.getJSONObject("duration").get("value") : jsonElement.getJSONObject("duration_in_traffic").get("value");
+                            LOGGER.debug("---google duration in seconds (driving) = {}", googleDurationDriving);
+                            transportInfo.setDuration((Integer) googleDurationDriving);
+                            transportInfo.setDurationAsText(jsonElement.opt("duration_in_traffic") == null ? (String) jsonElement.getJSONObject("duration").get("text") : (String) jsonElement.getJSONObject("duration_in_traffic").get("text"));
                         }
                         else {
                             LOGGER.debug("---google duration in seconds = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
@@ -253,6 +302,152 @@ public class GoogleServiceImpl implements GoogleService {
 
         LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "mode = {}, request = {}, googleTransportInfo = {}", transitMode, transportRequest, transportInfo);
         return transportInfo;
+    }
+
+    private Map<String, Double> getLatitudeAndLongitude(final String address) throws URISyntaxException {
+        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + " getLatitudeAndLongitude address = {}", address);
+
+        // Google GEOCoding API: https://developers.google.com/maps/documentation/geocoding/intro
+
+        // example of a request:
+
+//        https://maps.googleapis.com/maps/api/geocode/json?address=Tweebunder%204,%20Belgium
+
+        // example of a response:
+
+//        {
+//            "results" : [
+//            {
+//                "address_components" : [
+//                {
+//                    "long_name" : "4",
+//                        "short_name" : "4",
+//                        "types" : [ "street_number" ]
+//                },
+//                {
+//                    "long_name" : "Tweebunder",
+//                        "short_name" : "Tweebunder",
+//                        "types" : [ "route" ]
+//                },
+//                {
+//                    "long_name" : "Edegem",
+//                        "short_name" : "Edegem",
+//                        "types" : [ "political", "sublocality", "sublocality_level_1" ]
+//                },
+//                {
+//                    "long_name" : "Edegem",
+//                        "short_name" : "Edegem",
+//                        "types" : [ "locality", "political" ]
+//                },
+//                {
+//                    "long_name" : "Antwerpen",
+//                        "short_name" : "AN",
+//                        "types" : [ "administrative_area_level_2", "political" ]
+//                },
+//                {
+//                    "long_name" : "Vlaanderen",
+//                        "short_name" : "Vlaanderen",
+//                        "types" : [ "administrative_area_level_1", "political" ]
+//                },
+//                {
+//                    "long_name" : "Belgium",
+//                        "short_name" : "BE",
+//                        "types" : [ "country", "political" ]
+//                },
+//                {
+//                    "long_name" : "2650",
+//                        "short_name" : "2650",
+//                        "types" : [ "postal_code" ]
+//                }
+//                ],
+//                "formatted_address" : "Tweebunder 4, 2650 Edegem, Belgium",
+//                    "geometry" : {
+//                "bounds" : {
+//                    "northeast" : {
+//                        "lat" : 51.1499616,
+//                                "lng" : 4.4582731
+//                    },
+//                    "southwest" : {
+//                        "lat" : 51.1499561,
+//                                "lng" : 4.4582564
+//                    }
+//                },
+//                "location" : {
+//                    "lat" : 51.1499561,
+//                            "lng" : 4.4582564
+//                },
+//                "location_type" : "RANGE_INTERPOLATED",
+//                        "viewport" : {
+//                    "northeast" : {
+//                        "lat" : 51.15130783029151,
+//                                "lng" : 4.459613730291502
+//                    },
+//                    "southwest" : {
+//                        "lat" : 51.14860986970851,
+//                                "lng" : 4.456915769708498
+//                    }
+//                }
+//            },
+//                "place_id" : "EiJUd2VlYnVuZGVyIDQsIDI2NTAgRWRlZ2VtLCBCZWxnacOr",
+//                    "types" : [ "street_address" ]
+//            }
+//            ],
+//            "status" : "OK"
+//        }
+
+        Map<String, Double> mapWithLatitudeAndLongitude = new HashMap<>();
+
+        HttpClient httpClient = new DefaultHttpClient();
+
+        URI uri = new URI(
+                "https",
+                "maps.googleapis.com",
+                "/maps/api/geocode/json",
+                "address=" + address,
+                null);
+
+        String httpRequest = uri.toASCIIString();
+
+        HttpGet request = new HttpGet(httpRequest);
+
+        try {
+            HttpResponse httpResponse = httpClient.execute(request);
+            LOGGER.debug("--- httpResponse = {}", httpResponse);
+
+            // CONVERT RESPONSE TO STRING
+            String stringResult = EntityUtils.toString(httpResponse.getEntity());
+            LOGGER.debug("--- stringResult = {}", stringResult);
+
+            JSONObject jsonObject = new JSONObject(stringResult);
+            LOGGER.debug("--- jsonObject = {}", jsonObject);
+
+            // only process response if google was able to process the request
+
+            if ("OK".equals(jsonObject.get("status"))) {
+                // CONVERT STRING TO JSON ARRAY
+                JSONArray googleResults = jsonObject.getJSONArray("results");
+
+                if (googleResults.length() > 0) {
+                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+                    JSONObject firstGoogleResult = googleResults.getJSONObject(0);
+
+                    Double lat = (Double) ((JSONObject)((JSONObject) firstGoogleResult.get("geometry")).get("location")).get("lat");
+                    Double lng = (Double) ((JSONObject)((JSONObject) firstGoogleResult.get("geometry")).get("location")).get("lng");
+                    mapWithLatitudeAndLongitude.put("lat", lat);
+                    mapWithLatitudeAndLongitude.put("lng", lng);
+                }
+            }
+            else {
+                LOGGER.warn(DynaRouteServiceConstants.LOG_ERROR + "Google geocode returns an error: status {}", jsonObject.get("status"));
+            }
+
+        } catch (Throwable e) {
+            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking Google geocode: message = {}, address = {}", e.getMessage(), address);
+            return mapWithLatitudeAndLongitude;
+        }
+
+        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + " getLatitudeAndLongitude address = {}", address);
+        return mapWithLatitudeAndLongitude;
     }
 
 }

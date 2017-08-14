@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RestController
 public class TagController {
@@ -37,6 +36,7 @@ public class TagController {
         tags.add(new Tag("(", ")"));
 
         List<String> tagsToBeClosed = new ArrayList<>();
+
 
         for (int i=0; i<stringOfTags.length(); i++) {
             String tag = stringOfTags.substring(i,i+1);
@@ -62,6 +62,15 @@ public class TagController {
                     break;
                 }
             }
+        }
+
+        Date date = new Date();
+
+        LocalDateTime localDateTime  = LocalDateTime.now();
+        LocalDate localDate1 = LocalDate.of(2016, 1, 1);
+
+        if (!localDate1.isBefore(localDateTime.toLocalDate())) {
+            LOGGER.info("We are in 2016 or later");
         }
 
         LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + " stringOfTags = {}, result = {} ", stringOfTags, isStringOfTags);

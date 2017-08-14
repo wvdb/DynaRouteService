@@ -61,12 +61,11 @@ public class DynaRouteServiceController {
         return ResponseEntity.ok(new Greeting(COUNTER.incrementAndGet(), greetingText));
     }
 
-    @ApiOperation(value = "Business method to retrieve distances and duration when driving/walking/bicycling/using public transport.",
+    @ApiOperation(value = "Business method to retrieve on the one hand distances and duration when driving/walking/bicycling/using public transport and latitude/longitude on the other hand.",
             notes = "Distances is in metres, duration is in seconds.")
-    @RequestMapping(value = "/route",
+    @RequestMapping(value = "/routeInfo",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-//            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity handleRoute(
               @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
               @RequestParam(value = "homeAddress", required = true) String homeAddress
@@ -90,7 +89,7 @@ public class DynaRouteServiceController {
     public ResponseEntity handleFastestAndSlowestRoute(
             @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
             @RequestParam(value = "homeAddress", required = true) String homeAddress
-            , @ApiParam(value = "Partial or complete Office address. Example: Da Vincilaan 5, Zaventem, België")
+            , @ApiParam(value = "Partial or complete Office address. Example: Paris, France")
             @RequestParam(value = "officeAddress", required = true) String officeAddress
             , @ApiParam(value = "Time of departure in dd/MM/yyyy HH:mm:ss format. Example: 01/01/2020 17:00:00.")
             @RequestParam(value = "departureTime", required = true) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") Date departureTime
@@ -123,17 +122,19 @@ public class DynaRouteServiceController {
     public ResponseEntity handleFastestRouteForEachDayOfTheWeek(
             @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
             @RequestParam(value = "homeAddress", required = true) String homeAddress
-            , @ApiParam(value = "Partial or complete Office address. Example: Da Vincilaan 5, Zaventem, België")
+            , @ApiParam(value = "Partial or complete Office address. Example: Paris, France")
             @RequestParam(value = "officeAddress", required = true) String officeAddress
-            , @ApiParam(value = "Date of departure in dd/MM/yyyy format. Example: 01/01/2020")
-            @RequestParam(value = "departureTime", required = true) @DateTimeFormat(pattern = "dd/MM/yyyy") Date departureDate) {
+            , @ApiParam(value = "Date of departure in dd/MM/yyyy format. Example: 01/01/2020. Date must be in the future.")
+            @RequestParam(value = "departureTime", required = true) @DateTimeFormat(pattern = "dd/MM/yyyy") Date departureDate
+            , @ApiParam(value = "Number of days to be processed.")
+            @RequestParam(value = "numberOfDaysToBeProcessed", required = true) Integer numberOfDaysToBeProcessed
+            , @ApiParam(value = "Granularity of search. By default, time slots of 30 minutes will be processed.")
+            @RequestParam(value = "granularityInMinutes", required = false, defaultValue = "30") Integer granularityInMinutes) {
         TransportRequest transportRequest = new TransportRequest(officeAddress, homeAddress, departureDate, null);
         if (departureDate.before(new Date())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Date must not be in the past.");
         } else {
-            TransportResponseFastestSlowest transportResponseFastestSlowest = new TransportResponseFastestSlowest();
-
-            googleService.getFastestAndSlowestRouteForEachDayOfTheWeek(transportRequest, transportResponseFastestSlowest);
+            TransportResponseFastestSlowest transportResponseFastestSlowest  = googleService.getFastestAndSlowestRouteForEachDayOfTheWeek(transportRequest, numberOfDaysToBeProcessed, granularityInMinutes);
 
             transportResponseFastestSlowest.setRoutes(null);
 

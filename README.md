@@ -17,3 +17,12 @@ docker-compose up
 
 ### Swagger
 http://localhost:8088/dyna-route-service/swagger-ui.html
+
+### Websites of interest (others)
+* http://www.objgen.com/json
+* https://jsonlint.com/
+* https://www.docker.com/products/docker-toolbox
+* https://www.websequencediagrams.com/
+* https://app.scrumdo.com
+* http://www.latlong.net/ : to get latitude and longitude
+* https://github.com/OpenFeign/feign : REST client framework
