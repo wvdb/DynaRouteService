@@ -10,5 +10,5 @@ import be.ictdynamic.dynarouteservice.domain.TransportResponse;
  * @since 05/10/2015 - 20:35
  */
 public interface GoogleService {
-    TransportResponse getGoogleDistance(TransportRequest transportRequest) throws Exception;
+    TransportResponse processRouteRequest(TransportRequest transportRequest) throws Exception;
 }

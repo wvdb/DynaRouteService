@@ -2,6 +2,7 @@ package be.ictdynamic.dynarouteservice.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -18,10 +19,12 @@ public class TransportRequest implements Serializable {
 
     @Getter
     @Setter
+    @NotBlank(message = "officeAddress cannot be empty!")
     private String officeAddress;
 
     @Getter
     @Setter
+    @NotBlank(message = "homeAddress cannot be empty!")
     private String homeAddress;
 
     @Getter

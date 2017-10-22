@@ -22,11 +22,23 @@ public class TransportInfo implements Serializable {
     @Setter
     private Integer duration;
 
+    // longitude
+    @Getter
+    @Setter
+    private double lng;
+
+    // lattitude
+    @Getter
+    @Setter
+    private double lat;
+
     @Override
     public String toString() {
         return "TransportInfo{" +
                 "distance=" + distance +
                 ", duration=" + duration +
+                ", lng=" + lng +
+                ", lat=" + lat +
                 '}';
     }
 }

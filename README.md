@@ -15,3 +15,6 @@ program arguments : --spring.profiles.active=local
 TODO: add  a docker file hosting the restClient
 docker-compose up
 
+### Websites - interest
+* http://openweathermap.org/forecast5
+* http://api.openweathermap.org/data/2.5/forecast?lat=51.1500242&lon=4.4584652&APPID=97fdf5ad61c66373bf9e7c0134e256de

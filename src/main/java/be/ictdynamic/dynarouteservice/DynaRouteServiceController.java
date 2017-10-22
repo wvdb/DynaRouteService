@@ -2,7 +2,7 @@ package be.ictdynamic.dynarouteservice;
 
 import be.ictdynamic.dynarouteservice.domain.*;
 import be.ictdynamic.dynarouteservice.services.google_service.GoogleServiceImpl;
-import generated.SystemParameterRequest;
+import be.ictdynamic.dynarouteservice.domain.SystemParameterRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -77,7 +78,7 @@ public class DynaRouteServiceController {
         if (departureTime != null && departureTime.before(new Date())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Departure Time must not be in the past.");
         } else {
-            return ResponseEntity.ok(googleService.getGoogleDistance(transportRequest));
+            return ResponseEntity.ok(googleService.processRouteRequest(transportRequest));
         }
     }
 
@@ -125,17 +126,19 @@ public class DynaRouteServiceController {
 
     @ApiOperation(value = "Admin method to update the value of a system parameter used by the DynaRouteService application.",
             notes = "This method may be executed by authorized personnel only.")
-    @RequestMapping(value = "/systemParameters/{parameterKey}",
+    @RequestMapping(value = "/systemParameters",
             method = RequestMethod.PUT,
             consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity updateSystemParameter(@RequestBody SystemParameterRequest request, @PathVariable("parameterKey") String parameterKey) {
-        if (systemParameterConfig.getSystemParameters().containsKey(parameterKey)) {
-            systemParameterConfig.getSystemParameters().put(parameterKey, request.getParameterValue());
+    public ResponseEntity updateSystemParameter(@Valid @RequestBody SystemParameterRequest request) {
+        if (systemParameterConfig.getSystemParameters().containsKey(request.getParameterKey())) {
+            systemParameterConfig.getSystemParameters().put(request.getParameterKey(), request.getParameterValue());
             return ResponseEntity.ok(null);
         }
         else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s is not a valid parameter key.", parameterKey));
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s is not a valid parameter key.", request.getParameterKey()));
+            SystemParameterResponse systemParameterResponse = new SystemParameterResponse(String.format("%s is not a valid parameter key.", request.getParameterKey()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(systemParameterResponse);
         }
     }
 
