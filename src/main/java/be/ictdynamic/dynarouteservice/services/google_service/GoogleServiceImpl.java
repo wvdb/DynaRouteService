@@ -72,7 +72,7 @@ public class GoogleServiceImpl implements GoogleService {
         Map<String, Double> mapLatLng = this.getLatitudeLongitudeFromGoogle(transportRequest.getHomeAddress());
 
         // set latitude and longitude
-        if (mapLatLng != null) {
+        if (mapLatLng != null && mapLatLng.get("lat") != null && mapLatLng.get("lng") != null) {
             transportResponse.setLat(mapLatLng.get("lat"));
             transportResponse.setLng(mapLatLng.get("lng"));
 

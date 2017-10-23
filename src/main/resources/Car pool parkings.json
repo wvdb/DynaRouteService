@@ -1,0 +1,812 @@
+{
+	"carpoolparkings": [{
+		"parking": {
+			"title": " Geel-Oost ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Laakdal",
+			"field_locatie": "N174 (kmp. 4,350) / A13 (E313) - uitrit 24",
+			"field_carpoolkaart": "POINT (5.0202583691242 51.109809677999)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Halle-Dassenveld ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "HalleStrombeek-Bever",
+			"field_locatie": "N7 / A8 (E429) - uitrit 22",
+			"field_carpoolkaart": "POINT (4.2171191592222 50.726070514757)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Herentals-West ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Grobbendonk",
+			"field_locatie": "N13 / A13 (E313) - uitrit 20",
+			"field_carpoolkaart": "POINT (4.7555618901174 51.174040107005)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Keizershoek ",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Antwerpen",
+			"field_locatie": "N1/A1(E19) - uitrit 5 (kmp 47,8)",
+			"field_carpoolkaart": "POINT (4.4633674043606 51.260776232169)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Kemzeke-Oost ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Stekene",
+			"field_locatie": "N403 (Kmp 9,150) / N49",
+			"field_carpoolkaart": "POINT (4.0615724940522 51.2283529638)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Oelegem-Oost ",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Ranst",
+			"field_locatie": "GW Zandhovenstraat - A21 (E34) - uitrit 19",
+			"field_carpoolkaart": "POINT (4.6241068261829 51.212588476086)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Oelegem-West ",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Ranst",
+			"field_locatie": "GW Zandhovenstraat - A21 (E34) - uitrit 19",
+			"field_carpoolkaart": "POINT (4.6247612852488 51.211835729975)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Wilsele-De Vunt ",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Leuven",
+			"field_locatie": "N19e (kmp 0,350) / A2 (E314) - uitrit 20",
+			"field_carpoolkaart": "POINT (4.7165250200536 50.907145044764)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Wommelgem-Noord ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Wommelgem",
+			"field_locatie": "R11 / A13 (E34-E313) - uitrit 18",
+			"field_carpoolkaart": "POINT (4.492569 51.212531)"
+		}
+	},
+	{
+		"parking": {
+			"title": " Wommelgem-Zuid ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Wommelgem",
+			"field_locatie": "R11 / A13 (E34-E313) - uitrit 18",
+			"field_carpoolkaart": "POINT (4.4932364840129 51.209194300359)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Aalst-Zuid",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Aalst",
+			"field_locatie": "N45 / N460 (kmp 0)",
+			"field_carpoolkaart": "POINT (4.0318965333157 50.914106099267)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Aarschot",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Aarschot",
+			"field_locatie": "N223 (kmp 2,120) / A2 (E314) - uitrit 22",
+			"field_carpoolkaart": "POINT (4.8369454759028 50.963716532928)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Affligem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Affligem",
+			"field_locatie": "Bellestraat / N208 / A10 (E40) - uitrit 19a",
+			"field_carpoolkaart": "POINT (4.1229199786325 50.892576904885)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Antwerpen L.O. - Blancefloer",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Antwerpen",
+			"field_locatie": "N70 / R1 - uitrit 6",
+			"field_carpoolkaart": "POINT (4.3624305146596 51.220400174673)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Beernem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Beernem",
+			"field_locatie": "N370 (kmp 3,020) / A10 (E40) - uitrit 10",
+			"field_carpoolkaart": "POINT (3.3240293880757 51.120379763674)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Bekkevoort",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Bekkevoort",
+			"field_locatie": "N2 (kmp 45,300) / A2 (E314) - uitrit 24",
+			"field_carpoolkaart": "POINT (4.9978458306657 50.95239692106)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Bertem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Bertem",
+			"field_locatie": "N3 (kmp 20,650) / A3 (E40) - uitrit 22",
+			"field_carpoolkaart": "POINT (4.6046393532885 50.861783422216)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Boutersem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Boutersem",
+			"field_locatie": "N234 / A3 (E40) - uitrit 24",
+			"field_carpoolkaart": "POINT (4.8117756265105 50.82372771973)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Breendonk ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Puurs",
+			"field_locatie": "N17 (kmp 0,3) / N16 / A12",
+			"field_carpoolkaart": "POINT (4.334192218288 51.060101792222)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Deerlijk",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Deerlijk",
+			"field_locatie": "N36e - E403 uitrit 4",
+			"field_carpoolkaart": "POINT (3.3660220522071 50.851615556204)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Diepenbeek",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Diepenbeek",
+			"field_locatie": "N76 / A13 (E313) - uitrit 30",
+			"field_carpoolkaart": "POINT (5.4186200515607 50.894160445624)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Erpe-Mere",
+			"field_carpool_parking_types": "In ontwerp",
+			"field_gemeente": "Erpe-Mere",
+			"field_locatie": "N46 / A10 (E40) - uitrit 18",
+			"field_carpoolkaart": "POINT (3.9539944550314 50.928445702267)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Frederik Van Eeden ",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Antwerpen",
+			"field_locatie": "Metrostation Frederik Van Eedenplein",
+			"field_carpoolkaart": "POINT (4.3867205994284 51.221432320973)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Gentbrugge",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Gent",
+			"field_locatie": "N9 (kmp 50,7 tot 50,9)",
+			"field_carpoolkaart": "POINT (3.7611865421646 51.03169103567)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Gentbrugge-Oost",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Gent",
+			"field_locatie": "N9 (kmp 50,5 tot 50,7) (Arsenaal)",
+			"field_carpoolkaart": "POINT (3.7584077736259 51.033168662599)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Hakendover",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Tienen",
+			"field_locatie": "N3/R27/R27a",
+			"field_carpoolkaart": "POINT (4.9737166777713 50.800271671179)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Halen",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Halen",
+			"field_locatie": "N2 / A2 (E314) - uitrit 25",
+			"field_carpoolkaart": "POINT (5.0828048010005 50.962158995959)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Halle-Essenbeek",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Halle",
+			"field_locatie": "N28 / N203a (kmp. 0,890)",
+			"field_carpoolkaart": "POINT (4.2467307466091 50.720568946318)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Halle-Rattenput",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Halle",
+			"field_locatie": "N6 (Kmp 16,4) / N203a",
+			"field_carpoolkaart": "POINT (4.2276924272241 50.724198016374)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Halle-Sint Rochus",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Halle",
+			"field_locatie": "N203 (kmp 0,200)",
+			"field_carpoolkaart": "POINT (4.2574488539645 50.727843104774)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Hasselt-Zuid",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Hasselt",
+			"field_locatie": "N80 / A13 (E313) - uitrit 28",
+			"field_carpoolkaart": "POINT (5.3239380734817 50.914992222891)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Herent",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Herent",
+			"field_locatie": "N26 (kmp 0,550) / A2 (E314) - uitrit 18",
+			"field_carpoolkaart": "POINT (4.6893381494157 50.893740899667)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Hoegaarden",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Hoegaarden",
+			"field_locatie": "N29 / A3 (E40) - uitrit 25",
+			"field_carpoolkaart": "POINT (4.919825734518 50.779938139103)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Holsbeek",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Holsbeek",
+			"field_locatie": "GW Holsbeeksesteenweg / A2 (E314) - uitrit 21",
+			"field_carpoolkaart": "POINT (4.7428106683293 50.933651015062)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Houthalen",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Houthalen-Helchteren",
+			"field_locatie": "N715 / A2 (E314) - uitrit 29",
+			"field_carpoolkaart": "POINT (5.3733229057904 51.020064044272)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Izegem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Izegem",
+			"field_locatie": "N382c",
+			"field_carpoolkaart": "POINT (3.1554686447673 50.939539931397)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Jabbeke-Oost",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Jabbeke",
+			"field_locatie": "N367 (kmp 7,700) / A10 (E40) - uitrit 6",
+			"field_carpoolkaart": "POINT (3.1132506748122 51.18026306003)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Jabbeke-West",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Jabbeke",
+			"field_locatie": "N377 / A10 (E40) - oprit 6",
+			"field_carpoolkaart": "POINT (3.0932306667946 51.188003612814)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Jezus-Eik",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Overijse",
+			"field_locatie": "Graaf J. De Meeusstraat / A4 (E411) - uitrit 2",
+			"field_carpoolkaart": "POINT (4.4827651398203 50.79359881631)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Kampenhout",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Kampenhout",
+			"field_locatie": "N21 (kmp20,6) / N26 (kmp 10,6)",
+			"field_carpoolkaart": "POINT (4.5950638669735 50.954701641327)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Kemzeke-West",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Stekene",
+			"field_locatie": "N403 (Kmp 9,150) / N49",
+			"field_carpoolkaart": "POINT (4.060649814018 51.231053784441)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Kemzeke-Zuid",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Stekene",
+			"field_locatie": "N49 / N403 ten Z v/d N49",
+			"field_carpoolkaart": "POINT (4.062806310199 51.226814406969)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Kiewit",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Hasselt",
+			"field_locatie": "N74 / Station NMBS / Busstation De Lijn aan Philips",
+			"field_carpoolkaart": "POINT (5.3500842468884 50.95220094194)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Koksijde",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Koksijde",
+			"field_locatie": "N34, Groenendijk",
+			"field_carpoolkaart": ""
+		}
+	},
+	{
+		"parking": {
+			"title": "Kontich",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Kontich",
+			"field_locatie": "N171 / A1 (E19) - uitrit 7",
+			"field_carpoolkaart": "POINT (4.432642 51.126251)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Kortrijk",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Kortrijk",
+			"field_locatie": "N323b ter hoogte van E17",
+			"field_carpoolkaart": "POINT (3.270964564866 50.807833139419)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Kortrijk-Oost",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Kortrijk",
+			"field_locatie": "N8 / A14 (E17) - uitrit 3",
+			"field_carpoolkaart": "POINT (3.2979154010438 50.818516885519)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Kruishoutem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Kruishoutem",
+			"field_locatie": "N459 / A14 (E17) - uitrit 6",
+			"field_carpoolkaart": "POINT (3.4921395202697 50.916094754282)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Lichtervelde",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Lichtervelde",
+			"field_locatie": "N35 / A17 (E403) - uitrit 9",
+			"field_carpoolkaart": "POINT (3.1666802783148 51.01232909662)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Lille",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Lille",
+			"field_locatie": "N153 / A21 (E34) - uitrit 21",
+			"field_carpoolkaart": "POINT (4.8052873631045 51.254869672488)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Loppem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Zedelgem",
+			"field_locatie": "N397 / A10 (E40) - uitrit 7",
+			"field_carpoolkaart": "POINT (3.1919574160677 51.163499820719)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Lummen",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Lummen",
+			"field_locatie": "N717 / A2 (E314) - uitrit 26",
+			"field_carpoolkaart": "POINT (5.1985287087321 50.997381983758)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Maasmechelen",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Maasmechelen",
+			"field_locatie": "N78 / E314 - uitrit 33 (kmp 16,7)",
+			"field_carpoolkaart": "POINT (5.6945549862718 50.954417784907)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Meerbeke",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Ninove",
+			"field_locatie": "N28 (kmp 35,5 tot 36,550) / N8 (tramstatie)",
+			"field_carpoolkaart": "POINT (4.0346860309573 50.828132857166)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Meise",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Meise",
+			"field_locatie": "N277 (kmp 9,8)",
+			"field_carpoolkaart": "POINT (4.3304156679288 50.93474636939)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Melsele",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Beveren",
+			"field_locatie": "N70 / N419",
+			"field_carpoolkaart": "POINT (4.306366982038 51.218626801833)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Melsele-Noord",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Beveren",
+			"field_locatie": "N450 (kmp 3,020) / A11 (E34) - uitrit 9",
+			"field_carpoolkaart": "POINT (4.277586879179 51.241882243294)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Melsele-Zuid",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Beveren",
+			"field_locatie": "N450 (kmp 2,320) / A11 (E34) - uitrit 9",
+			"field_carpoolkaart": "POINT (4.2675232310229 51.241653877776)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Menen",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Deerlijk",
+			"field_locatie": "Op- en afrittencomplex A19 - N32",
+			"field_carpoolkaart": "POINT (3.126114549579 50.817382198178)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Merelbeke",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Merelbeke",
+			"field_locatie": "B403 / R4 / A10 (E40) - uitrit 16",
+			"field_carpoolkaart": "POINT (3.7638258357018 51.003985246046)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Middelkerke",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Middelkerke",
+			"field_locatie": "N369 / A18 (E40) - uitrit 4",
+			"field_carpoolkaart": "POINT (2.8617667574108 51.141641922078)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Minitaria",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Tienen",
+			"field_locatie": "N3 / rotonde R27",
+			"field_carpoolkaart": "POINT (4.9711954015643 50.799369829282)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Nazareth",
+			"field_carpool_parking_types": "In ontwerp",
+			"field_gemeente": "Nazareth",
+			"field_locatie": "E17 afrit 7 - Steenweg Deinze / Gaversesteenweg",
+			"field_carpoolkaart": "POINT (3.5831951518281 50.946685383969)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Nevele",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Nevele",
+			"field_locatie": "Op- en afrittencomplex E40 Nevele",
+			"field_carpoolkaart": "POINT (3.52796 51.056416)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Nieuwpoort",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Nieuwpoort",
+			"field_locatie": "N355 / A18 (E40) - uitrit 3",
+			"field_carpoolkaart": "POINT (2.7572678943385 51.111815554969)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Ninove",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Ninove",
+			"field_locatie": "N255 (kmp 15,2) / N8",
+			"field_carpoolkaart": "POINT (4.026188792666 50.82748228777)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Oostkamp",
+			"field_carpool_parking_types": "In ontwerp",
+			"field_gemeente": "Oostkamp",
+			"field_locatie": "Afrit E40",
+			"field_carpoolkaart": "POINT (3.2319545170254 51.146994290477)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Oostkamp 2",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Oostkamp",
+			"field_locatie": "N50g / A10 (E40) - uitrit 9",
+			"field_carpoolkaart": "POINT (3.2474898713709 51.14465742022)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Overijse",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Overijse",
+			"field_locatie": "Kerkeweg / N253 (kmp 18,3) / A4 (E411) - uitrit 3",
+			"field_carpoolkaart": "POINT (4.5266031640868 50.755604926589)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Paal",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Beringen",
+			"field_locatie": "N29 / A13 (E313) - uitrit 26",
+			"field_carpoolkaart": "POINT (5.1853536980528 51.044677695987)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Rotselaar",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Rotselaar",
+			"field_locatie": "N19 / A12 (E314) - uitrit 21 (aan rotonde)",
+			"field_carpoolkaart": "POINT (4.7290348428307 50.943900359021)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Rumst",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Rumst",
+			"field_locatie": "N1c / A1 (E19) - uitrit 8",
+			"field_carpoolkaart": "POINT (4.4453429596496 51.085138433976)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Sint-Denijs-Westrem",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Gent",
+			"field_locatie": "B402 / A10 (E40) - uitrit 14 / N43",
+			"field_carpoolkaart": "POINT (3.6949833190171 51.024792830216)"
+		}
+	},
+	{
+		"parking": {
+			"title": "St. Job in ’t Goor ",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Brasschaat",
+			"field_locatie": "N117 Verkeerscomplex St. Job in ’t Goor",
+			"field_carpoolkaart": "POINT (4.5543439113527 51.30558581303)"
+		}
+	},
+	{
+		"parking": {
+			"title": "St. Michiels",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Brugge",
+			"field_locatie": "N31 / N32",
+			"field_carpoolkaart": "POINT (3.1951331515407 51.199064055115)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Sterrebeek",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Zaventem",
+			"field_locatie": "N227 (kmp 17,180) / A3 (E40) - uitrit 21",
+			"field_carpoolkaart": "POINT (4.5107030291155 50.869940900015)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Strombeek-Bever",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Strombeek-Bever",
+			"field_locatie": "N276 (kmp 1,180) / A12 - uitrit 2",
+			"field_carpoolkaart": "POINT (4.3469112535013 50.903958442182)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Tielt-Winge",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Tielt-Winge",
+			"field_locatie": "N258 (kmp 1,980) / A2 (E314) - uitrit 23",
+			"field_carpoolkaart": "POINT (4.930093230559 50.960175675677)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Torhout",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Torhout",
+			"field_locatie": "R34 ter hoogte van rotonde Keibergstraat",
+			"field_carpoolkaart": "POINT (3.1218766589362 51.078243986828)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Veurne",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Veurne",
+			"field_locatie": "Iepersesteenweg / N8 (kmp 145,450) / A18 (E40) - uitrit 1a",
+			"field_carpoolkaart": "POINT (2.665772380502 51.060931189232)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Vilvoorde",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Machelen",
+			"field_locatie": "N21 / N211 / A1 (E19) - uitrit 12",
+			"field_carpoolkaart": "POINT (4.4595747609472 50.910482260065)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Vrasene-Noord",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Beveren",
+			"field_locatie": "N451 (kmp 8,880) / A11 (E34) - uitrit 10",
+			"field_carpoolkaart": "POINT (4.1896747965857 51.240740404431)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Waasmunster",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Waasmunster",
+			"field_locatie": "N446 / A14 (E17) - uitrit 13",
+			"field_carpoolkaart": "POINT (4.0795111078745 51.128433335061)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Walshoutem",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Landen",
+			"field_locatie": "N80 (kmp 32,0) / A3 (E40) - uitrit 28",
+			"field_carpoolkaart": "POINT (5.0817024128956 50.713144200972)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Waregem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Waregem",
+			"field_locatie": "N382 / A14 (E17) - uitrit 5",
+			"field_carpoolkaart": "POINT (3.4401797670407 50.874585400392)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Winksele",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Herent",
+			"field_locatie": "Stuiversweg / N2 (kmp 22,4) / A2 (E314) - uitrit 17",
+			"field_carpoolkaart": "POINT (4.6719896215765 50.885362195442)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Wuustwezel",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Wuustwezel",
+			"field_locatie": "N1 (oude stelplaats De Lijn) (kmp 67,9)",
+			"field_carpoolkaart": "POINT (4.5845603364726 51.384576454614)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Zandvoorde",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Oostende",
+			"field_locatie": "Kasteelstraat / A10 - uitrit 5",
+			"field_carpoolkaart": "POINT (2.9762863537612 51.204529421034)"
+		}
+	},
+	{
+		"parking": {
+			"title": "Zingem",
+			"field_carpool_parking_types": "Carpoolparking",
+			"field_gemeente": "Zingem",
+			"field_locatie": "N60",
+			"field_carpoolkaart": ""
+		}
+	},
+	{
+		"parking": {
+			"title": "Zoersel",
+			"field_carpool_parking_types": "Park & Ride",
+			"field_gemeente": "Zoersel",
+			"field_locatie": "N14 / A21 (E34) - uitrit 20",
+			"field_carpoolkaart": "POINT (4.7037791626834 51.245428479712)"
+		}
+	}]
+}

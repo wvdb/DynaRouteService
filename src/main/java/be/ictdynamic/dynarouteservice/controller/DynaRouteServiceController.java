@@ -1,5 +1,6 @@
-package be.ictdynamic.dynarouteservice;
+package be.ictdynamic.dynarouteservice.controller;
 
+import be.ictdynamic.dynarouteservice.DynaRouteServiceConstants;
 import be.ictdynamic.dynarouteservice.domain.*;
 import be.ictdynamic.dynarouteservice.services.google_service.GoogleServiceImpl;
 import be.ictdynamic.dynarouteservice.domain.SystemParameterRequest;

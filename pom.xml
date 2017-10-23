@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.2.RELEASE</version>
+		<version>1.5.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -29,27 +29,50 @@
 
 	<dependencies>
         <!--Spring Boot-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jersey</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-jersey</artifactId>-->
+		<!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.springframework.boot</groupId>-->
 			<!--<artifactId>spring-boot-starter-security</artifactId>-->
 		<!--</dependency>-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-web</artifactId>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <!-- Junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!--Lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -58,18 +81,18 @@
             <scope>provided</scope>
         </dependency>
         <!-- JAXB -->
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>${jaxb2-basics-runtime.version}</version>
-        </dependency>
-        <!-- JODA TIME -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.9.7</version>
-        </dependency>
-        <!-- Swagger -->
+        <!--<dependency>-->
+            <!--<groupId>org.jvnet.jaxb2_commons</groupId>-->
+            <!--<artifactId>jaxb2-basics-runtime</artifactId>-->
+            <!--<version>${jaxb2-basics-runtime.version}</version>-->
+        <!--</dependency>-->
+        <!--&lt;!&ndash; JODA TIME &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>joda-time</groupId>-->
+            <!--<artifactId>joda-time</artifactId>-->
+            <!--<version>2.9.7</version>-->
+        <!--</dependency>-->
+        <!--&lt;!&ndash; Swagger &ndash;&gt;-->
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
@@ -92,42 +115,42 @@
             <!--<version>20150729</version>-->
             <version>20131018</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.collections</groupId>
-            <artifactId>collections-generic</artifactId>
-            <version>4.01</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.commons</groupId>-->
+            <!--<artifactId>commons-collections4</artifactId>-->
+            <!--<version>4.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.commons</groupId>-->
+            <!--<artifactId>commons-lang3</artifactId>-->
+            <!--<version>3.3.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>commons-io</groupId>-->
+            <!--<artifactId>commons-io</artifactId>-->
+            <!--<version>2.4</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>commons-beanutils</groupId>-->
+            <!--<artifactId>commons-beanutils</artifactId>-->
+            <!--<version>1.9.2</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>net.sourceforge.collections</groupId>-->
+            <!--<artifactId>collections-generic</artifactId>-->
+            <!--<version>4.01</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.0</version>
         </dependency>
-        <!-- JAXB -->
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>${jaxb2-basics-runtime.version}</version>
-        </dependency>
+        <!--&lt;!&ndash; JAXB &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.jvnet.jaxb2_commons</groupId>-->
+            <!--<artifactId>jaxb2-basics-runtime</artifactId>-->
+            <!--<version>${jaxb2-basics-runtime.version}</version>-->
+        <!--</dependency>-->
     </dependencies>
 
 	<build>

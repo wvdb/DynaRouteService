@@ -1,5 +1,7 @@
 package be.ictdynamic.dynarouteservice.domain;
 
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.Map;
  * @author Wim Van den Brande
  * @since 03/10/2015 - 20:35
  */
+@Component
 public class TransportResponse implements Serializable {
     // hashMap with key = transport and value = GoogleTransportInfo
     private HashMap<String, TransportInfo> transportInfoMap;
@@ -18,6 +21,8 @@ public class TransportResponse implements Serializable {
     private double lng;
 
     private Map<String, Double> mapWeather;
+
+    private String responseMessage;
 
     public HashMap<String, TransportInfo> getTransportInfoMap() {
         if (transportInfoMap == null) {
@@ -52,5 +57,13 @@ public class TransportResponse implements Serializable {
 
     public void setMapWeather(Map<String, Double> mapWeather) {
         this.mapWeather = mapWeather;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
     }
 }
