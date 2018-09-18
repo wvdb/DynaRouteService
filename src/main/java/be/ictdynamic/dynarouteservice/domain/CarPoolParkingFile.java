@@ -8,20 +8,20 @@ import java.util.List;
  * Created by admin on 23/10/2017.
  */
 public class CarPoolParkingFile implements Serializable {
-    private List<CarPoolParkings> carpoolparkings;
+    private List<CarPoolParking> carpoolparkings;
 
-    public List<CarPoolParkings> getCarpoolparkings() {
+    public List<CarPoolParking> getCarpoolparkings() {
         if (carpoolparkings == null) {
             carpoolparkings = new ArrayList<>();
         }
         return carpoolparkings;
     }
 
-    public void setCarpoolparkings(List<CarPoolParkings> carpoolparkings) {
+    public void setCarpoolparkings(List<CarPoolParking> carpoolparkings) {
         this.carpoolparkings = carpoolparkings;
     }
 
-    private static class CarPoolParkings {
+    public static class CarPoolParking {
         private Parking parking;
 
         public Parking getParking() {
@@ -32,7 +32,7 @@ public class CarPoolParkingFile implements Serializable {
             this.parking = parking;
         }
 
-        private static class Parking {
+        public static class Parking {
             private String title;
             private String field_carpool_parking_types;
             private String field_gemeente;

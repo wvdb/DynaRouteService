@@ -3,7 +3,6 @@ package be.ictdynamic.dynarouteservice.controller;
 import be.ictdynamic.dynarouteservice.DynaRouteServiceConstants;
 import be.ictdynamic.dynarouteservice.domain.*;
 import be.ictdynamic.dynarouteservice.services.google_service.GoogleServiceImpl;
-import be.ictdynamic.dynarouteservice.domain.SystemParameterRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -16,10 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -46,19 +43,8 @@ public class DynaRouteServiceController {
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity greeting(@RequestParam(value = "commune", required = true, defaultValue = "Edegem") String commune) {
         String greetingText = String.format(TEMPLATE, commune);
-        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + " Greeting, text = " + greetingText);
-
-        Dummy dummy1 = new Dummy("wim", "van den brande");
-        Dummy dummy2 = new Dummy("kaat", "frison");
-        Dummy dummy3 = new Dummy("donald", "trump");
-        List<Dummy> dummies = new ArrayList<>();
-        dummies.add(dummy1);
-        dummies.add(dummy2);
-        dummies.add(dummy3);
-        List<String> voornamen1 = dummies.stream().map(dummy -> dummy.getVoornaam()).collect(Collectors.toList());
-        List<String> voornamen2 = dummies.stream().map(Dummy::getVoornaam).collect(Collectors.toList());
-
-        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + " Greeting");
+        LOGGER.debug(DynaRouteServiceConstants.LOG_STARTING + " Greeting, text = " + greetingText);
+        LOGGER.debug(DynaRouteServiceConstants.LOG_ENDING + " Greeting");
         return ResponseEntity.ok(new Greeting(COUNTER.incrementAndGet(), greetingText));
     }
 
