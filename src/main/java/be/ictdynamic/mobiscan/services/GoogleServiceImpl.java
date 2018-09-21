@@ -1,11 +1,11 @@
-package be.ictdynamic.dynarouteservice.services.google_service;
+package be.ictdynamic.mobiscan.services;
 
-import be.ictdynamic.dynarouteservice.DynaRouteServiceConstants;
-import be.ictdynamic.dynarouteservice.domain.TransportInfo;
-import be.ictdynamic.dynarouteservice.domain.TransportRequest;
-import be.ictdynamic.dynarouteservice.domain.TransportResponse;
-import be.ictdynamic.dynarouteservice.domain.TransportResponseFastestSlowest;
-import be.ictdynamic.dynarouteservice.utilities.DateUtility;
+import be.ictdynamic.mobiscan.MobiscanConstants;
+import be.ictdynamic.mobiscan.domain.TransportInfo;
+import be.ictdynamic.mobiscan.domain.TransportRequest;
+import be.ictdynamic.mobiscan.domain.TransportResponse;
+import be.ictdynamic.mobiscan.domain.TransportResponseFastestSlowest;
+import be.ictdynamic.mobiscan.utilities.DateUtility;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -62,7 +62,7 @@ public class GoogleServiceImpl implements GoogleService {
                 TransportInfo transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, null);
                 googleTransportInfoMap.put(transitMode, transportInfo);
             } catch (URISyntaxException e) {
-                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+                LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
             }
         });
 
@@ -86,7 +86,7 @@ public class GoogleServiceImpl implements GoogleService {
     }
 
     private Map<String, Double> getInfoFromOpenWeatherMap(String address, Map<String, Double> mapLatLng, Date departureTime) {
-        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "getting info from OpenWeatherMap for address = {}, departureTime {}.", address, departureTime);
+        LOGGER.info(MobiscanConstants.LOG_STARTING + "getting info from OpenWeatherMap for address = {}, departureTime {}.", address, departureTime);
 
         // http://openweathermap.org/forecast5
 
@@ -141,20 +141,20 @@ public class GoogleServiceImpl implements GoogleService {
                     }
                 }
             } else {
-                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "openweathermap cnt is <= 0 : {}", jsonObject.get("cnt"));
+                LOGGER.error(MobiscanConstants.LOG_ERROR + "openweathermap cnt is <= 0 : {}", jsonObject.get("cnt"));
             }
 
         } catch (Throwable e) {
-            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when using openweathermap: address = {}, exception = {}", address, e);
+            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when using openweathermap: address = {}, exception = {}", address, e);
             return mapWithWeatherInfo;
         }
 
-        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "address {}, departureTime {} has rain {} and snow {}.", address, departureTime, mapWithWeatherInfo.get("lat"), mapWithWeatherInfo.get("lng"));
+        LOGGER.info(MobiscanConstants.LOG_ENDING + "address {}, departureTime {} has rain {} and snow {}.", address, departureTime, mapWithWeatherInfo.get("lat"), mapWithWeatherInfo.get("lng"));
         return mapWithWeatherInfo;
     }
 
     private Map<String, Double> getLatitudeLongitudeFromGoogle(String address) {
-        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "getting LatitudeLongitudeFromGoogle for address = {}", address);
+        LOGGER.info(MobiscanConstants.LOG_STARTING + "getting LatitudeLongitudeFromGoogle for address = {}", address);
 
         // Geocoding API = https://developers.google.com/maps/documentation/geocoding/intro
 
@@ -200,15 +200,15 @@ public class GoogleServiceImpl implements GoogleService {
                     mapWithLatAndLng.put("lng", lng);
                 }
             } else {
-                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
+                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
             }
 
         } catch (Throwable e) {
-            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when geocoding: address = {}", address);
+            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when geocoding: address = {}", address);
             return mapWithLatAndLng;
         }
 
-        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "address {} has lat {} and lng {}.", address, mapWithLatAndLng.get("lat"), mapWithLatAndLng.get("lng"));
+        LOGGER.info(MobiscanConstants.LOG_ENDING + "address {} has lat {} and lng {}.", address, mapWithLatAndLng.get("lat"), mapWithLatAndLng.get("lng"));
         return mapWithLatAndLng;
     }
 
@@ -236,7 +236,7 @@ public class GoogleServiceImpl implements GoogleService {
                     // increase departure Time with 1800 seconds for next processing
                     departTimeLong += 1800;
                 } catch (URISyntaxException e) {
-                    LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+                    LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
                 }
             }
         });
@@ -245,7 +245,7 @@ public class GoogleServiceImpl implements GoogleService {
     }
 
     private TransportInfo getGoogleDistanceBasedOnTransportModeAndTime(final TransportRequest transportRequest, final String transitMode, final long departureTime, String departureTimeAsString) throws URISyntaxException {
-        LOGGER.info(DynaRouteServiceConstants.LOG_STARTING + "mode = {}, request = {}, departureTimeAsString = {}", transitMode, transportRequest, departureTimeAsString);
+        LOGGER.info(MobiscanConstants.LOG_STARTING + "mode = {}, request = {}, departureTimeAsString = {}", transitMode, transportRequest, departureTimeAsString);
 
         // Google Distance Matrix API = https://developers.google.com/maps/documentation/distance-matrix/start
 
@@ -346,15 +346,15 @@ public class GoogleServiceImpl implements GoogleService {
                 }
             }
             else {
-                LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
+                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
             }
 
         } catch (Throwable e) {
-            LOGGER.error(DynaRouteServiceConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
             return transportInfo;
         }
 
-        LOGGER.info(DynaRouteServiceConstants.LOG_ENDING + "mode = {}, request = {}, googleTransportInfo = {}", transitMode, transportRequest, transportInfo);
+        LOGGER.info(MobiscanConstants.LOG_ENDING + "mode = {}, request = {}, googleTransportInfo = {}", transitMode, transportRequest, transportInfo);
         return transportInfo;
     }
 

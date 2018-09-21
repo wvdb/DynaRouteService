@@ -1,6 +1,6 @@
-package be.ictdynamic.dynarouteservice.controller;
+package be.ictdynamic.mobiscan.controller;
 
-import be.ictdynamic.dynarouteservice.domain.TransportResponse;
+import be.ictdynamic.mobiscan.domain.TransportResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

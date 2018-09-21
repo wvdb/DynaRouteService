@@ -1,4 +1,4 @@
-package be.ictdynamic.dynarouteservice.domain;
+package be.ictdynamic.mobiscan.domain;
 
 import lombok.Getter;
 import lombok.Setter;

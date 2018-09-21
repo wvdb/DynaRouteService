@@ -1,4 +1,4 @@
-package be.ictdynamic.dynarouteservice;
+package be.ictdynamic.mobiscan;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("be.ictdynamic.dynarouteservice"))
+                .apis(RequestHandlerSelectors.basePackage("be.ictdynamic.mobiscan"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());
@@ -29,7 +29,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("DynaRouteService Api")
+                .title("Mobiscan Api")
                 .description("Hier steht die Beschreibung der Api")
                 .termsOfServiceUrl("http://springfox.io")
                 .contact(new Contact("Wim Van den Brande", "www.ictdynamic.be", "info@ictdynamic.be"))

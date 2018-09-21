@@ -1,7 +1,7 @@
-package be.ictdynamic.dynarouteservice.services.google_service;
+package be.ictdynamic.mobiscan.services;
 
-import be.ictdynamic.dynarouteservice.domain.TransportRequest;
-import be.ictdynamic.dynarouteservice.domain.TransportResponse;
+import be.ictdynamic.mobiscan.domain.TransportRequest;
+import be.ictdynamic.mobiscan.domain.TransportResponse;
 
 /**
  * Class GoogleService.

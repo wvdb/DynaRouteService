@@ -1,4 +1,4 @@
-package be.ictdynamic.dynarouteservice.utilities;
+package be.ictdynamic.mobiscan.utilities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

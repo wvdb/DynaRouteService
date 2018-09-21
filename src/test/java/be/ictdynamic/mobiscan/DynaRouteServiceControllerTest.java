@@ -1,6 +1,5 @@
-package be.ictdynamic.dynarouteservice;
+package be.ictdynamic.mobiscan;
 
-import be.ictdynamic.dynarouteservice.domain.SystemParameterConfig;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,20 +14,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
  * Created by wvdbrand on 3/04/2017.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = DynarouteserviceApplication.class)
+@SpringBootTest(classes = MobiscanApplication.class)
 @WebAppConfiguration
 @Ignore
 public class DynaRouteServiceControllerTest {
@@ -37,9 +29,6 @@ public class DynaRouteServiceControllerTest {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
-
-    @Autowired
-    private SystemParameterConfig systemParameterConfig;
 
     private MediaType contentType = new MediaType(  MediaType.APPLICATION_JSON.getType(),
                                                     MediaType.APPLICATION_JSON.getSubtype(),

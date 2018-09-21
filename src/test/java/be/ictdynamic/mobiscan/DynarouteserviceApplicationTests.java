@@ -1,4 +1,4 @@
-package be.ictdynamic.dynarouteservice;
+package be.ictdynamic.mobiscan;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

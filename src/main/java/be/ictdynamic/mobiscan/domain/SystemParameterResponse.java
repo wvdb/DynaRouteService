@@ -1,4 +1,4 @@
-package be.ictdynamic.dynarouteservice.domain;
+package be.ictdynamic.mobiscan.domain;
 
 /**
  * Created by admin on 22/10/2017.
