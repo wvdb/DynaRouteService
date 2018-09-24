@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest(classes = MobiscanApplication.class)
 @WebAppConfiguration
 @Ignore
-public class DynaRouteServiceControllerTest {
+public class PersistRequestControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;

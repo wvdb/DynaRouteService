@@ -34,7 +34,7 @@ public class GoogleServiceImpl implements GoogleService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleServiceImpl.class);
 
-    @Value("${dyna-route-service.google-distance-matrix-api-key}")
+    @Value("${mobiscan.google-distance-matrix-api-key}")
     public String GOOGLE_DISTANCE_MATRIX_API_KEY;
 
     public static final String DRIVING = "driving";
@@ -66,7 +66,7 @@ public class GoogleServiceImpl implements GoogleService {
             }
         });
 
-        // set map with 4 different transitodes
+        // set map with 4 different transit-modes
         transportResponse.setTransportInfoMap(googleTransportInfoMap);
 
         Map<String, Double> mapLatLng = this.getLatitudeLongitudeFromGoogle(transportRequest.getHomeAddress());

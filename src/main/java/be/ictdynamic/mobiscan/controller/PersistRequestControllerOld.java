@@ -19,15 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @RestController
-public class DynaRouteServiceController {
+public class PersistRequestControllerOld {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynaRouteServiceController.class);
-    private static final String TEMPLATE = "You are from %s!";
-    private static final AtomicLong COUNTER = new AtomicLong();
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistRequestControllerOld.class);
 
     @Autowired
     private GoogleServiceImpl googleService;
@@ -37,7 +34,6 @@ public class DynaRouteServiceController {
     @RequestMapping(value = "/route",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-//            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity handleRoute(
               @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
               @RequestParam(value = "homeAddress", required = true) String homeAddress
