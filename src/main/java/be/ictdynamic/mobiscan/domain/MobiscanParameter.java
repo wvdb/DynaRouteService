@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
@@ -17,7 +16,6 @@ public class MobiscanParameter {
     @Getter
     @Setter
     @NotNull
-    @Column(unique=true)
     private String parameterKey;
 
     @Getter
