@@ -1,7 +1,7 @@
 package be.ictdynamic.mobiscan.services;
 
-import be.ictdynamic.mobiscan.domain.TransportRequest;
-import be.ictdynamic.mobiscan.domain.TransportResponse;
+import be.ictdynamic.mobiscan.domain.GoogleDistanceMatrixResponse;
+import be.ictdynamic.mobiscan.domain.MobiscanRequest;
 
 /**
  * Class GoogleService.
@@ -10,5 +10,6 @@ import be.ictdynamic.mobiscan.domain.TransportResponse;
  * @since 05/10/2015 - 20:35
  */
 public interface GoogleService {
-    TransportResponse processRouteRequest(TransportRequest transportRequest) throws Exception;
+    public GoogleDistanceMatrixResponse getGoogleDistanceMatrixResponse(final MobiscanRequest mobiscanRequest);
+//    public TransportResponse processRouteRequest(MobiscanRequest mobiscanRequest) throws Exception;
 }

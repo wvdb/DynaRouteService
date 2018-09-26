@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -47,12 +47,11 @@ public class MobiscanRequest extends BaseEntity {
 
     @Getter
     @Setter
-    @NotNull
-    private Date departureDate;
+    private LocalDateTime departureDate;
 
     @Getter
     @Setter
-    private Date processingDate;
+    private LocalDateTime processingDate;
 
     @Override
     public String toString() {
