@@ -1,8 +1,6 @@
 package be.ictdynamic.mobiscan.utilities;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Date;
 
 /**
@@ -44,6 +42,11 @@ public final class DateUtility {
     public final static long convertLocalDateToEpoch(LocalDate localDate) {
         ZoneId zoneId = ZoneId.systemDefault(); // or: ZoneId.of("Europe/Oslo");
         return localDate.atStartOfDay(zoneId).toEpochSecond();
+    }
+
+    public final static long convertLocalDateTimeToEpoch(LocalDateTime localDateTime) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofLocal(localDateTime, ZoneId.systemDefault(), null);
+        return zonedDateTime.toEpochSecond();
     }
 
     public final static Date convertLocalDateToDate(LocalDate localDate) {

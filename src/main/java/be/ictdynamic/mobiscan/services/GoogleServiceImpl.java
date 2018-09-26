@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -46,7 +44,8 @@ public class GoogleServiceImpl implements GoogleService {
     public GoogleDistanceMatrixResponse getGoogleDistanceMatrixResponse(final MobiscanRequest mobiscanRequest) {
         GoogleDistanceMatrixResponse googleDistanceMatrixResponse = new GoogleDistanceMatrixResponse();
 
-        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
+//        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
+        List<String> transitModes = Arrays.asList(DRIVING);
 
         transitModes.forEach(transitMode -> {
             try {
@@ -264,7 +263,7 @@ public class GoogleServiceImpl implements GoogleService {
 //    }
 
     private GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail getGoogleDistanceBasedOnTransportModeAndTime(final MobiscanRequest mobiscanRequest, final String transitMode) throws Exception {
-        LOGGER.info(MobiscanConstants.LOG_STARTING + "mode = {}, fromAddress = {}, toAddress = {}, departureTime = {}", transitMode, mobiscanRequest.getLocationFrom(), mobiscanRequest.getLocationTo(), mobiscanRequest.getDepartureDate());
+        LOGGER.debug(MobiscanConstants.LOG_STARTING + "mode = {}, fromAddress = {}, toAddress = {}, departureTime = {}", transitMode, mobiscanRequest.getLocationFrom(), mobiscanRequest.getLocationTo(), mobiscanRequest.getDepartureDate());
 
         // Google Distance Matrix API
         // https://developers.google.com/maps/documentation/distance-matrix/start
@@ -314,9 +313,8 @@ public class GoogleServiceImpl implements GoogleService {
         HttpClient httpClient = new DefaultHttpClient();
 
         String departureTime = "";
-        if (mobiscanRequest.getDepartureDate() != null && mobiscanRequest.getDepartureDate().isBefore(LocalDateTime.now()) ) {
-            ZonedDateTime zonedDateTime = ZonedDateTime.ofLocal(mobiscanRequest.getDepartureDate(), ZoneOffset.UTC, null);
-            departureTime = "&departure_time=" + zonedDateTime.toEpochSecond();
+        if (mobiscanRequest.getDepartureDate() != null && mobiscanRequest.getDepartureDate().isAfter(LocalDateTime.now()) ) {
+            departureTime = "&departure_time=" + DateUtility.convertLocalDateTimeToEpoch(mobiscanRequest.getDepartureDate());
         }
 
         URI uri = new URI(
@@ -361,9 +359,9 @@ public class GoogleServiceImpl implements GoogleService {
                         LOGGER.debug("---google distance = {}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
 
                         googleDistanceMatrixResponseDetail.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
-                        // when we drive, we use duration_in_traffic to get a more realistic duration
-                        if (DRIVING.equals(transitMode)) {
-                            LOGGER.debug("---google duration in metres = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
+                        // when we drive, we use duration_in_traffic (if available) to get a more realistic duration
+                        if (DRIVING.equals(transitMode) && jsonElement.opt("duration_in_traffic") != null) {
+                            LOGGER.debug("---google duration_in_traffic in seconds = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
                             googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
                         }
                         else {

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -35,7 +35,7 @@ public class ProcessRequestService {
 
                 googleService.getGoogleDistanceMatrixResponse(mobiscanRequest);
 
-                mobiscanRequest.setProcessingDate(LocalDate.now());
+                mobiscanRequest.setProcessingDate(LocalDateTime.now());
                 mobiscanRequestRepository.save(mobiscanRequest);
             });
         }
