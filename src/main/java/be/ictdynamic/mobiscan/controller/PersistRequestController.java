@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+
 @RestController
 public class PersistRequestController {
 
@@ -22,18 +27,34 @@ public class PersistRequestController {
     @Autowired
     MobiscanRequestRepository mobiscanRequestRepository;
 
-    @ApiOperation(value = "Method to persist request.",
+    @ApiOperation(value = "Method to persist Mobiscan Requests.",
             notes = "TBD.")
-    @RequestMapping(value = "/persistRequest",
+    @RequestMapping(value = "/mobiscanRequests",
             method = RequestMethod.POST,
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity persistRequest(
-            @ApiParam(value = "Partial or complete Home address. Example: Tweebunder 4, Edegem, België")
+            @ApiParam(value = "MobiscanRequest. Example: TBD")
             @RequestBody(required = true) MobiscanRequest mobiscanRequest) {
 
-            mobiscanRequestRepository.save(mobiscanRequest);
+        LocalDateTime lastDayOfMonth = mobiscanRequest.getDepartureDate().with(lastDayOfMonth());
 
-            return null;
+        Long index = mobiscanRequestRepository.findMaxId();
+        if (index == null) {
+            index = 1L;
+        }
+        else {
+            index += 1;
+        }
+
+        while (!mobiscanRequest.getDepartureDate().isAfter(lastDayOfMonth)) {
+            if (mobiscanRequest.getDepartureDate().getDayOfWeek() != DayOfWeek.SATURDAY && mobiscanRequest.getDepartureDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                mobiscanRequest.setId(index++);
+                mobiscanRequestRepository.save(mobiscanRequest);
+            }
+            mobiscanRequest.setDepartureDate(mobiscanRequest.getDepartureDate().plusDays(1));
+        }
+
+        return null;
     }
 
 }

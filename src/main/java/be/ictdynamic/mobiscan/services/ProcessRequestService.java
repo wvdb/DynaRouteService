@@ -1,5 +1,6 @@
 package be.ictdynamic.mobiscan.services;
 
+import be.ictdynamic.mobiscan.domain.GoogleDistanceMatrixResponse;
 import be.ictdynamic.mobiscan.domain.MobiscanRequest;
 import be.ictdynamic.mobiscan.repository.MobiscanRequestRepository;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class ProcessRequestService {
         if (mobiscanRequestsToBeProcessed != null) {
             mobiscanRequestsToBeProcessed.forEach(mobiscanRequest -> {
 
-                googleService.getGoogleDistanceMatrixResponse(mobiscanRequest);
+                GoogleDistanceMatrixResponse googleDistanceMatrixResponse = googleService.getGoogleDistanceMatrixResponse(mobiscanRequest);
 
                 mobiscanRequest.setProcessingDate(LocalDateTime.now());
                 mobiscanRequestRepository.save(mobiscanRequest);

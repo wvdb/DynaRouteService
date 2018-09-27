@@ -3,6 +3,7 @@ package be.ictdynamic.mobiscan.services;
 import be.ictdynamic.mobiscan.MobiscanConstants;
 import be.ictdynamic.mobiscan.domain.GoogleDistanceMatrixResponse;
 import be.ictdynamic.mobiscan.domain.MobiscanRequest;
+import be.ictdynamic.mobiscan.enums.GoogleDistanceMatrixTransitMode;
 import be.ictdynamic.mobiscan.utilities.DateUtility;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -21,6 +22,8 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static be.ictdynamic.mobiscan.utilities.MobiscanUtilities.timedReturn;
+
 /**
  * Class GoogleServiceImpl.
  *
@@ -33,30 +36,29 @@ public class GoogleServiceImpl implements GoogleService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleServiceImpl.class);
 
     @Value("${mobiscan.google-distance-matrix-api-key}")
-    public String GOOGLE_DISTANCE_MATRIX_API_KEY;
+    private String GOOGLE_DISTANCE_MATRIX_API_KEY;
 
-    public static final String DRIVING = "driving";
-    public static final String WALKING = "walking";
-    public static final String BICYCLING = "bicycling";
-    public static final String TRANSIT = "transit";
+    @Value("${mobiscan.isTestMode}")
+    private boolean isTestMode;
 
     @Override
     public GoogleDistanceMatrixResponse getGoogleDistanceMatrixResponse(final MobiscanRequest mobiscanRequest) {
+        Date startDate = new Date();
+
         GoogleDistanceMatrixResponse googleDistanceMatrixResponse = new GoogleDistanceMatrixResponse();
 
-//        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
-        List<String> transitModes = Arrays.asList(DRIVING);
+        List<GoogleDistanceMatrixTransitMode> transitModes = Arrays.asList(GoogleDistanceMatrixTransitMode.values());
 
         transitModes.forEach(transitMode -> {
             try {
-                GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail googleDistanceMatrixResponseDetail = this.getGoogleDistanceBasedOnTransportModeAndTime(mobiscanRequest, transitMode);
-                googleDistanceMatrixResponse.getGoogleDistanceMatrixDetails().put(transitMode, googleDistanceMatrixResponseDetail);
+                GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail googleDistanceMatrixResponseDetail = this.getGoogleDistanceBasedOnTransportModeAndTime(mobiscanRequest, transitMode.getTransitMode());
+                googleDistanceMatrixResponse.getGoogleDistanceMatrixDetails().put(transitMode.getTransitMode(), googleDistanceMatrixResponseDetail);
             } catch (Exception e) {
                 LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred : message = {}, mode = {}, mobiscanRequest = {}", e.getMessage(), transitMode, mobiscanRequest);
             }
         });
 
-        return googleDistanceMatrixResponse;
+        return timedReturn(LOGGER, new Object() {}.getClass().getEnclosingMethod().getName(), startDate.getTime(), googleDistanceMatrixResponse);
     }
 
 //    @Override
@@ -333,13 +335,24 @@ public class GoogleServiceImpl implements GoogleService {
         HttpGet request = new HttpGet(httpRequest);
 
         try {
-            HttpResponse httpResponse = httpClient.execute(request);
-            LOGGER.debug("--- httpResponse = {}", httpResponse);
+            String stringResult;
 
-            // CONVERT RESPONSE TO STRING
-            String stringResult = EntityUtils.toString(httpResponse.getEntity());
+            if (!isTestMode) {
+                HttpResponse httpResponse = httpClient.execute(request);
+                LOGGER.debug("--- httpResponse = {}", httpResponse);
+
+                // CONVERT RESPONSE TO STRING
+                stringResult = EntityUtils.toString(httpResponse.getEntity());
+            }
+            else {
+                short index = (short) Integer.parseInt(mobiscanRequest.getEmployeeId());
+                if (Integer.parseInt(mobiscanRequest.getEmployeeId()) > 1) {
+                    index = 0;
+                }
+                stringResult = MobiscanConstants.DISTANCE_MATRIX_TEST_RESPONSE[index];
+            }
+
             LOGGER.debug("--- stringResult = {}", stringResult);
-
             JSONObject jsonObject = new JSONObject(stringResult);
             LOGGER.debug("--- jsonObject = {}", jsonObject);
 
@@ -360,7 +373,7 @@ public class GoogleServiceImpl implements GoogleService {
 
                         googleDistanceMatrixResponseDetail.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
                         // when we drive, we use duration_in_traffic (if available) to get a more realistic duration
-                        if (DRIVING.equals(transitMode) && jsonElement.opt("duration_in_traffic") != null) {
+                        if (GoogleDistanceMatrixTransitMode.DRIVING.getTransitMode().equals(transitMode) && jsonElement.opt("duration_in_traffic") != null) {
                             LOGGER.debug("---google duration_in_traffic in seconds = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
                             googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
                         }
