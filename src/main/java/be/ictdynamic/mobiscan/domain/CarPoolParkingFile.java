@@ -49,8 +49,8 @@ public class CarPoolParkingFile implements Serializable {
             @JsonProperty("field_carpoolkaart")
             private String locationDetails;
 
-            float latitudeOfParking;
-            float longitudeOfParking;
+            double latitudeOfParking;
+            double longitudeOfParking;
 
             public String getTitle() {
                 return title;
@@ -92,19 +92,19 @@ public class CarPoolParkingFile implements Serializable {
                 this.locationDetails = locationDetails;
             }
 
-            public float getLatitudeOfParking() {
+            public double getLatitudeOfParking() {
                 return latitudeOfParking;
             }
 
-            public void setLatitudeOfParking(float latitudeOfParking) {
+            public void setLatitudeOfParking(double latitudeOfParking) {
                 this.latitudeOfParking = latitudeOfParking;
             }
 
-            public float getLongitudeOfParking() {
+            public double getLongitudeOfParking() {
                 return longitudeOfParking;
             }
 
-            public void setLongitudeOfParking(float longitudeOfParking) {
+            public void setLongitudeOfParking(double longitudeOfParking) {
                 this.longitudeOfParking = longitudeOfParking;
             }
 

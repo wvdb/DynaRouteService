@@ -33,12 +33,12 @@ public class CarPoolParking extends BaseEntity {
 	@NotNull
     @Getter
     @Setter
-	private float latitude;
+	private double latitude;
 
     @NotNull
     @Getter
     @Setter
-    private float longitude;
+    private double longitude;
 
     @Override
     public String toString() {

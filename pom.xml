@@ -47,10 +47,10 @@
 			<scope>test</scope>
 		</dependency>
         <!-- Logging -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-log4j2</artifactId>-->
+        <!--</dependency>-->
         <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -118,40 +118,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.13.1</version>
-                <executions>
-                    <execution>
-                        <id>dynarouteservice</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <schemaDirectory>src/main/resources/xsd</schemaDirectory>
-                            <schemaIncludes>
-                                <include>SystemParameter.xsd</include>
-                            </schemaIncludes>
-                            <bindingDirectory>src/main/resources</bindingDirectory>
-                            <generateDirectory>target/generated-sources</generateDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <extension>true</extension>
-                    <args>
-                        <arg>-Xannotate</arg>
-                    </args>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.jvnet.jaxb2_commons</groupId>
-                            <artifactId>jaxb2-basics-annotate</artifactId>
-                            <version>0.6.0</version>
-                        </plugin>
-                    </plugins>
-                </configuration>
-            </plugin>
         </plugins>
 	</build>
 

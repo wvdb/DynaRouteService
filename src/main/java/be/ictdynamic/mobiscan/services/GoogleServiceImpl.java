@@ -10,11 +10,15 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -57,50 +61,6 @@ public class GoogleServiceImpl implements GoogleService {
 
         return timedReturn(LOGGER, new Object() {}.getClass().getEnclosingMethod().getName(), startDate.getTime(), googleDistanceMatrixResponse);
     }
-
-//    @Override
-//    public TransportResponse processRouteRequest(final TransportRequest transportRequest) {
-//        TransportResponse transportResponse = new TransportResponse();
-//        HashMap<String, TransportInfo> googleTransportInfoMap = new HashMap<>();
-//        transportResponse.setTransportInfoMap(new HashMap<>());
-//
-//        List<String> transitModes = Arrays.asList(DRIVING, WALKING, BICYCLING, TRANSIT);
-//
-//        transitModes.forEach(transitMode -> {
-//            try {
-//                long departTimeLong;
-//                // if departureTime is unknown, we use system date as default
-//                if (transportRequest.getDepartureTime() == null) {
-//                    departTimeLong = System.currentTimeMillis() / 1000;
-//                }
-//                else {
-//                    departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
-//                }
-//                TransportInfo transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode);
-//                googleTransportInfoMap.put(transitMode, transportInfo);
-//            } catch (URISyntaxException e) {
-//                LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
-//            }
-//        });
-//
-//        // set map with 4 different transit-modes
-//        transportResponse.setTransportInfoMap(googleTransportInfoMap);
-//
-////        Map<String, Double> mapLatLng = this.getLatitudeLongitudeFromGoogle(transportRequest.getHomeAddress());
-////
-////        // set latitude and longitude
-////        if (mapLatLng != null && mapLatLng.get("lat") != null && mapLatLng.get("lng") != null) {
-////            transportResponse.setLat(mapLatLng.get("lat"));
-////            transportResponse.setLng(mapLatLng.get("lng"));
-////
-////            // lat/lon is known so let's retrieve the weather info for this particular Date and let's set it
-////            if (transportRequest.getDepartureTime() != null) {
-////                transportResponse.setMapWeather(this.getInfoFromOpenWeatherMap(transportRequest.getHomeAddress(), mapLatLng, transportRequest.getDepartureTime()));
-////            }
-////        }
-//
-//        return transportResponse;
-//    }
 
     private Map<String, Double> getInfoFromOpenWeatherMap(String address, Map<String, Double> mapLatLng, Date departureTime) {
         LOGGER.info(MobiscanConstants.LOG_STARTING + "getting info from OpenWeatherMap for address = {}, departureTime {}.", address, departureTime);
@@ -331,64 +291,68 @@ public class GoogleServiceImpl implements GoogleService {
 
         HttpGet request = new HttpGet(httpRequest);
 
-//        try {
-//            String stringResult;
-//
-//            if (!isTestMode) {
-//                HttpResponse httpResponse = httpClient.execute(request);
-//                LOGGER.debug("--- httpResponse = {}", httpResponse);
-//
-//                // CONVERT RESPONSE TO STRING
-//                stringResult = EntityUtils.toString(httpResponse.getEntity());
-//            }
-//            else {
-//                short index = (short) Integer.parseInt(mobiscanRequest.getEmployeeId());
-//                if (Integer.parseInt(mobiscanRequest.getEmployeeId()) > 1) {
-//                    index = 0;
-//                }
-//                stringResult = MobiscanConstants.DISTANCE_MATRIX_TEST_RESPONSE[index];
-//            }
+        try {
+            String stringResult;
 
-//            LOGGER.debug("--- stringResult = {}", stringResult);
+            if (!isTestMode) {
+                HttpResponse httpResponse = httpClient.execute(request);
+                LOGGER.debug("--- httpResponse = {}", httpResponse);
+
+                // CONVERT RESPONSE TO STRING
+                stringResult = EntityUtils.toString(httpResponse.getEntity());
+            }
+            else {
+                short index = (short) Integer.parseInt(mobiscanRequest.getEmployeeId());
+                if (Integer.parseInt(mobiscanRequest.getEmployeeId()) > 1) {
+                    index = 0;
+                }
+                stringResult = MobiscanConstants.DISTANCE_MATRIX_TEST_RESPONSE[index];
+            }
+
+            LOGGER.debug("--- stringResult = {}", stringResult);
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parser.parse(stringResult);
+
 //            JSONObject jsonObject = new JSONObject(stringResult);
-//            LOGGER.debug("--- jsonObject = {}", jsonObject);
-//
-//            // only process response if google was able to process the request
-//
-//            if ("OK".equals(jsonObject.get("status"))) {
-//                // CONVERT STRING TO JSON ARRAY
-//                JSONArray jsonArrayRow = jsonObject.getJSONArray("rows");
-//
-//                for (int i = 0; i < jsonArrayRow.length(); i++) {
-//                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
-//                    JSONObject jsonObject2 = jsonArrayRow.getJSONObject(i);
-//
-//                    JSONArray jsonArrayElement = jsonObject2.getJSONArray("elements");
-//                    for (int j = 0; j < jsonArrayElement.length(); j++) {
-//                        JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
-//                        LOGGER.debug("---google distance = {}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
-//
-//                        googleDistanceMatrixResponseDetail.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
-//                        // when we drive, we use duration_in_traffic (if available) to get a more realistic duration
-//                        if (GoogleDistanceMatrixTransitMode.DRIVING.getTransitMode().equals(transitMode) && jsonElement.opt("duration_in_traffic") != null) {
-//                            LOGGER.debug("---google duration_in_traffic in seconds = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
-//                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
-//                        }
-//                        else {
-//                            LOGGER.debug("---google duration in seconds = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
-//                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
-//                        }
-//                    }
-//                }
-//            }
-//            else {
-//                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
-//            }
-//
-//        } catch (IOException e ) {
-//            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, mobiscanRequest);
-//            throw e;
-//        }
+            LOGGER.debug("--- jsonObject = {}", jsonObject);
+
+            // only process response if google was able to process the request
+
+            if ("OK".equals(jsonObject.get("status"))) {
+                // CONVERT STRING TO JSON ARRAY
+                JSONArray jsonArrayRow = (JSONArray) jsonObject.get("rows");
+
+                for (int i = 0; i < jsonArrayRow.size(); i++) {
+                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+                    JSONObject jsonRow = (JSONObject) jsonArrayRow.get(i);
+
+                    JSONArray jsonArrayElement = (JSONArray) jsonRow.get("elements");
+                    for (int j = 0; j < jsonArrayElement.size(); j++) {
+                        JSONObject jsonElement = (JSONObject) jsonArrayElement.get(j);
+                        LOGGER.debug("---google distance = {}", jsonElement.get("distance") == null ? 0 : ((JSONObject) jsonElement.get("distance")).get("value"));
+
+                        googleDistanceMatrixResponseDetail.setDistance(jsonElement.containsKey("distance")? 0 : (Integer) ((JSONObject) jsonElement.get("distance")).get("value"));
+                        // when we drive, we use duration_in_traffic (if available) to get a more realistic duration
+                        if (GoogleDistanceMatrixTransitMode.DRIVING.getTransitMode().equals(transitMode) && jsonElement.containsKey("duration_in_traffic")) {
+                            LOGGER.debug("---google duration_in_traffic in seconds = {}", jsonElement.containsKey("duration_in_traffic") ? 0 : ((JSONObject) jsonElement.get("duration_in_traffic")).get("value"));
+                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.containsKey("duration_in_traffic") ? 0 : (Integer) ((JSONObject) jsonElement.get("duration_in_traffic")).get("value"));
+                        }
+                        else {
+                            LOGGER.debug("---google duration in seconds = {}", jsonElement.containsKey("duration") ? 0 : ((JSONObject) jsonElement.get("duration")).get("value"));
+                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.containsKey("duration") ? 0 : (Integer) ((JSONObject) jsonElement.get("duration")).get("value"));
+                        }
+                    }
+                }
+            }
+            else {
+                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
+            }
+
+        } catch (IOException e ) {
+            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, mobiscanRequest);
+            throw e;
+        }
 
         LOGGER.debug(MobiscanConstants.LOG_ENDING + "mode = {}, request = {}, googleDistanceMatrixResponseDetail = {}", transitMode, mobiscanRequest, googleDistanceMatrixResponseDetail);
         return googleDistanceMatrixResponseDetail;

@@ -72,25 +72,22 @@ public class LoadCarPoolParkingFileService {
         return carPoolParkingFile.getCarpoolparkings().size();
     }
 
-    private void persistInES(CarPoolParking carPoolParkingToBePersisted) {
+    private void persistInMySql(CarPoolParking carPoolParkingToBePersisted) {
         carPoolParkingRepository.save(carPoolParkingToBePersisted);
     }
 
-    private void persistInMySql(CarPoolParking carPoolParkingToBePersisted) throws IllegalArgumentException, IOException {
+    private void persistInES(CarPoolParking carPoolParkingToBePersisted) throws IllegalArgumentException, IOException {
         CarPoolParkingES carPoolParkingES = new CarPoolParkingES();
 
         carPoolParkingES.setCommune(carPoolParkingToBePersisted.getCommune());
         carPoolParkingES.setType(carPoolParkingToBePersisted.getType());
         carPoolParkingES.setTitle(carPoolParkingToBePersisted.getTitle());
-        carPoolParkingES.setLatitude(Float.toString(carPoolParkingToBePersisted.getLatitude()));
-        carPoolParkingES.setLongitude(Float.toString(carPoolParkingToBePersisted.getLongitude()));
+        carPoolParkingES.setLatitude(Double.toString(carPoolParkingToBePersisted.getLatitude()));
+        carPoolParkingES.setLongitude(Double.toString(carPoolParkingToBePersisted.getLongitude()));
 
         JSONObject myLocation = new JSONObject();
-//        myLocation.put("lon", carPoolParkingES.getLongitude());
-//        myLocation.put("lat", carPoolParkingES.getLatitude());
-
-        myLocation.put("lon", "4.4011606");
-        myLocation.put("lat", "51.2061132");
+        myLocation.put("lon", carPoolParkingES.getLongitude());
+        myLocation.put("lat", carPoolParkingES.getLatitude());
 
         IndexRequest indexRequest = new IndexRequest(ES_CAR_POOL_PARKING_INDEX_NAME, ES_CAR_POOL_PARKING_INDEX_TYPE)
                 .source(

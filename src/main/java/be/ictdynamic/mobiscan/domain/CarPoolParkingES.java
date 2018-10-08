@@ -25,4 +25,14 @@ public class CarPoolParkingES {
     @Setter
     private String longitude;
 
+    @Override
+    public String toString() {
+        return "CarPoolParkingES{" +
+                "title='" + title + '\'' +
+                ", type='" + type + '\'' +
+                ", commune='" + commune + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                '}';
+    }
 }
