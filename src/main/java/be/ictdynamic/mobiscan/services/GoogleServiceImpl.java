@@ -10,14 +10,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -114,62 +111,62 @@ public class GoogleServiceImpl implements GoogleService {
         Map<String, Double> mapWithWeatherInfo = new HashMap<>();
 
 //        http://api.openweathermap.org/data/2.5/forecast?lat=51.1500242&lon=4.4584652&APPID=97fdf5ad61c66373bf9e7c0134e256de
-        try {
-            URI uri = new URI(
-                    "http",
-                    "api.openweathermap.org",
-                    "/data/2.5/forecast",
-                    "lat=" + mapLatLng.get("lat") + "&lon=" + mapLatLng.get("lng") + "&APPID=97fdf5ad61c66373bf9e7c0134e256de",
-                    null);
-
-            String httpRequest = uri.toASCIIString();
-            HttpGet request = new HttpGet(httpRequest);
-            HttpResponse httpResponse = httpClient.execute(request);
-
-            // CONVERT RESPONSE TO STRING
-            String stringResult = EntityUtils.toString(httpResponse.getEntity());
-            LOGGER.debug("--- stringResult = {}", stringResult);
-
-            JSONObject jsonObject = new JSONObject(stringResult);
-            LOGGER.debug("--- jsonObject = {}", jsonObject);
-
-            // only process response if cnt > 0
-
-            if ((Integer)jsonObject.get("cnt") > 0) {
-                // CONVERT STRING TO JSON ARRAY
-                JSONArray lists = jsonObject.getJSONArray("list");
-
-                boolean mathingDate = false;
-
-                for (int i = 0; i < lists.length() & mathingDate == false; i++) {
-                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
-                    JSONObject list = lists.getJSONObject(i);
-
-                    Integer forecastDateTimeAsInteger = (Integer) list.get("dt");
-
-                    // we stop processing once we heave a weather list with a forecastDateTime that exceeds our departure-time
-                    if ((((long) forecastDateTimeAsInteger) * 1000) > DateUtility.convertDateToEpoch(departureTime)) {
-                        mathingDate = true;
-
-                        JSONObject rain = list.getJSONObject("rain");
-                        JSONObject snow = list.opt("snow") == null ? null : list.getJSONObject("snow");
-                        Double rainVolumeForLast3H = rain == null ? 0 : (Double) rain.get("3h");
-                        Double snowVolumeForLast3H = snow == null ? 0 : (Double) snow.get("3h");
-
-                        mapWithWeatherInfo.put("rain", rainVolumeForLast3H);
-                        mapWithWeatherInfo.put("snow", snowVolumeForLast3H);
-                    }
-                }
-            } else {
-                LOGGER.error(MobiscanConstants.LOG_ERROR + "openweathermap cnt is <= 0 : {}", jsonObject.get("cnt"));
-            }
-
-        } catch (Throwable e) {
-            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when using openweathermap: address = {}, exception = {}", address, e);
-            return mapWithWeatherInfo;
-        }
-
-        LOGGER.info(MobiscanConstants.LOG_ENDING + "address {}, departureTime {} has rain {} and snow {}.", address, departureTime, mapWithWeatherInfo.get("lat"), mapWithWeatherInfo.get("lng"));
+//        try {
+//            URI uri = new URI(
+//                    "http",
+//                    "api.openweathermap.org",
+//                    "/data/2.5/forecast",
+//                    "lat=" + mapLatLng.get("lat") + "&lon=" + mapLatLng.get("lng") + "&APPID=97fdf5ad61c66373bf9e7c0134e256de",
+//                    null);
+//
+//            String httpRequest = uri.toASCIIString();
+//            HttpGet request = new HttpGet(httpRequest);
+//            HttpResponse httpResponse = httpClient.execute(request);
+//
+//            // CONVERT RESPONSE TO STRING
+//            String stringResult = EntityUtils.toString(httpResponse.getEntity());
+//            LOGGER.debug("--- stringResult = {}", stringResult);
+//
+//            JSONObject jsonObject = new JSONObject(stringResult);
+//            LOGGER.debug("--- jsonObject = {}", jsonObject);
+//
+//            // only process response if cnt > 0
+//
+//            if ((Integer)jsonObject.get("cnt") > 0) {
+//                // CONVERT STRING TO JSON ARRAY
+//                JSONArray lists = jsonObject.getJSONArray("list");
+//
+//                boolean mathingDate = false;
+//
+//                for (int i = 0; i < lists.length() & mathingDate == false; i++) {
+//                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+//                    JSONObject list = lists.getJSONObject(i);
+//
+//                    Integer forecastDateTimeAsInteger = (Integer) list.get("dt");
+//
+//                    // we stop processing once we heave a weather list with a forecastDateTime that exceeds our departure-time
+//                    if ((((long) forecastDateTimeAsInteger) * 1000) > DateUtility.convertDateToEpoch(departureTime)) {
+//                        mathingDate = true;
+//
+//                        JSONObject rain = list.getJSONObject("rain");
+//                        JSONObject snow = list.opt("snow") == null ? null : list.getJSONObject("snow");
+//                        Double rainVolumeForLast3H = rain == null ? 0 : (Double) rain.get("3h");
+//                        Double snowVolumeForLast3H = snow == null ? 0 : (Double) snow.get("3h");
+//
+//                        mapWithWeatherInfo.put("rain", rainVolumeForLast3H);
+//                        mapWithWeatherInfo.put("snow", snowVolumeForLast3H);
+//                    }
+//                }
+//            } else {
+//                LOGGER.error(MobiscanConstants.LOG_ERROR + "openweathermap cnt is <= 0 : {}", jsonObject.get("cnt"));
+//            }
+//
+//        } catch (Throwable e) {
+//            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when using openweathermap: address = {}, exception = {}", address, e);
+//            return mapWithWeatherInfo;
+//        }
+//
+//        LOGGER.info(MobiscanConstants.LOG_ENDING + "address {}, departureTime {} has rain {} and snow {}.", address, departureTime, mapWithWeatherInfo.get("lat"), mapWithWeatherInfo.get("lng"));
         return mapWithWeatherInfo;
     }
 
@@ -198,30 +195,30 @@ public class GoogleServiceImpl implements GoogleService {
             String stringResult = EntityUtils.toString(httpResponse.getEntity());
             LOGGER.debug("--- stringResult = {}", stringResult);
 
-            JSONObject jsonObject = new JSONObject(stringResult);
-            LOGGER.debug("--- jsonObject = {}", jsonObject);
+//            JSONObject jsonObject = new JSONObject(stringResult);
+//            LOGGER.debug("--- jsonObject = {}", jsonObject);
 
             // only process response if google was able to process the request
 
-            if ("OK".equals(jsonObject.get("status"))) {
-                // CONVERT STRING TO JSON ARRAY
-                JSONArray results = jsonObject.getJSONArray("results");
-
-                for (int i = 0; i < results.length(); i++) {
-                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
-                    JSONObject result = results.getJSONObject(i);
-
-                    JSONObject geometry = result.getJSONObject("geometry");
-                    JSONObject location = geometry.getJSONObject("location");
-                    Double lat = (Double) location.get("lat");
-                    Double lng = (Double) location.get("lng");
-
-                    mapWithLatAndLng.put("lat", lat);
-                    mapWithLatAndLng.put("lng", lng);
-                }
-            } else {
-                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
-            }
+//            if ("OK".equals(jsonObject.get("status"))) {
+//                // CONVERT STRING TO JSON ARRAY
+//                JSONArray results = jsonObject.getJSONArray("results");
+//
+//                for (int i = 0; i < results.length(); i++) {
+//                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+//                    JSONObject result = results.getJSONObject(i);
+//
+//                    JSONObject geometry = result.getJSONObject("geometry");
+//                    JSONObject location = geometry.getJSONObject("location");
+//                    Double lat = (Double) location.get("lat");
+//                    Double lng = (Double) location.get("lng");
+//
+//                    mapWithLatAndLng.put("lat", lat);
+//                    mapWithLatAndLng.put("lng", lng);
+//                }
+//            } else {
+//                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
+//            }
 
         } catch (Throwable e) {
             LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when geocoding: address = {}", address);
@@ -334,64 +331,64 @@ public class GoogleServiceImpl implements GoogleService {
 
         HttpGet request = new HttpGet(httpRequest);
 
-        try {
-            String stringResult;
+//        try {
+//            String stringResult;
+//
+//            if (!isTestMode) {
+//                HttpResponse httpResponse = httpClient.execute(request);
+//                LOGGER.debug("--- httpResponse = {}", httpResponse);
+//
+//                // CONVERT RESPONSE TO STRING
+//                stringResult = EntityUtils.toString(httpResponse.getEntity());
+//            }
+//            else {
+//                short index = (short) Integer.parseInt(mobiscanRequest.getEmployeeId());
+//                if (Integer.parseInt(mobiscanRequest.getEmployeeId()) > 1) {
+//                    index = 0;
+//                }
+//                stringResult = MobiscanConstants.DISTANCE_MATRIX_TEST_RESPONSE[index];
+//            }
 
-            if (!isTestMode) {
-                HttpResponse httpResponse = httpClient.execute(request);
-                LOGGER.debug("--- httpResponse = {}", httpResponse);
-
-                // CONVERT RESPONSE TO STRING
-                stringResult = EntityUtils.toString(httpResponse.getEntity());
-            }
-            else {
-                short index = (short) Integer.parseInt(mobiscanRequest.getEmployeeId());
-                if (Integer.parseInt(mobiscanRequest.getEmployeeId()) > 1) {
-                    index = 0;
-                }
-                stringResult = MobiscanConstants.DISTANCE_MATRIX_TEST_RESPONSE[index];
-            }
-
-            LOGGER.debug("--- stringResult = {}", stringResult);
-            JSONObject jsonObject = new JSONObject(stringResult);
-            LOGGER.debug("--- jsonObject = {}", jsonObject);
-
-            // only process response if google was able to process the request
-
-            if ("OK".equals(jsonObject.get("status"))) {
-                // CONVERT STRING TO JSON ARRAY
-                JSONArray jsonArrayRow = jsonObject.getJSONArray("rows");
-
-                for (int i = 0; i < jsonArrayRow.length(); i++) {
-                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
-                    JSONObject jsonObject2 = jsonArrayRow.getJSONObject(i);
-
-                    JSONArray jsonArrayElement = jsonObject2.getJSONArray("elements");
-                    for (int j = 0; j < jsonArrayElement.length(); j++) {
-                        JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
-                        LOGGER.debug("---google distance = {}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
-
-                        googleDistanceMatrixResponseDetail.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
-                        // when we drive, we use duration_in_traffic (if available) to get a more realistic duration
-                        if (GoogleDistanceMatrixTransitMode.DRIVING.getTransitMode().equals(transitMode) && jsonElement.opt("duration_in_traffic") != null) {
-                            LOGGER.debug("---google duration_in_traffic in seconds = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
-                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
-                        }
-                        else {
-                            LOGGER.debug("---google duration in seconds = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
-                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
-                        }
-                    }
-                }
-            }
-            else {
-                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
-            }
-
-        } catch (IOException e ) {
-            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, mobiscanRequest);
-            throw e;
-        }
+//            LOGGER.debug("--- stringResult = {}", stringResult);
+//            JSONObject jsonObject = new JSONObject(stringResult);
+//            LOGGER.debug("--- jsonObject = {}", jsonObject);
+//
+//            // only process response if google was able to process the request
+//
+//            if ("OK".equals(jsonObject.get("status"))) {
+//                // CONVERT STRING TO JSON ARRAY
+//                JSONArray jsonArrayRow = jsonObject.getJSONArray("rows");
+//
+//                for (int i = 0; i < jsonArrayRow.length(); i++) {
+//                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+//                    JSONObject jsonObject2 = jsonArrayRow.getJSONObject(i);
+//
+//                    JSONArray jsonArrayElement = jsonObject2.getJSONArray("elements");
+//                    for (int j = 0; j < jsonArrayElement.length(); j++) {
+//                        JSONObject jsonElement = jsonArrayElement.getJSONObject(j);
+//                        LOGGER.debug("---google distance = {}", jsonElement.getJSONObject("distance") == null ? 0 : jsonElement.getJSONObject("distance").get("value"));
+//
+//                        googleDistanceMatrixResponseDetail.setDistance(jsonElement.opt("distance") == null ? 0 : (Integer) jsonElement.getJSONObject("distance").get("value"));
+//                        // when we drive, we use duration_in_traffic (if available) to get a more realistic duration
+//                        if (GoogleDistanceMatrixTransitMode.DRIVING.getTransitMode().equals(transitMode) && jsonElement.opt("duration_in_traffic") != null) {
+//                            LOGGER.debug("---google duration_in_traffic in seconds = {}", jsonElement.opt("duration_in_traffic") == null ? 0 : jsonElement.getJSONObject("duration_in_traffic").get("value"));
+//                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration_in_traffic") == null ? 0 : (Integer) jsonElement.getJSONObject("duration_in_traffic").get("value"));
+//                        }
+//                        else {
+//                            LOGGER.debug("---google duration in seconds = {}", jsonElement.opt("duration") == null ? 0 : jsonElement.getJSONObject("duration").get("value"));
+//                            googleDistanceMatrixResponseDetail.setDuration(jsonElement.opt("duration") == null ? 0 : (Integer) jsonElement.getJSONObject("duration").get("value"));
+//                        }
+//                    }
+//                }
+//            }
+//            else {
+//                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
+//            }
+//
+//        } catch (IOException e ) {
+//            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when querying Google Maps: message = {}, mode = {}, request = {}", e.getMessage(), transitMode, mobiscanRequest);
+//            throw e;
+//        }
 
         LOGGER.debug(MobiscanConstants.LOG_ENDING + "mode = {}, request = {}, googleDistanceMatrixResponseDetail = {}", transitMode, mobiscanRequest, googleDistanceMatrixResponseDetail);
         return googleDistanceMatrixResponseDetail;

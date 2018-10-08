@@ -19,7 +19,6 @@ public class BaseController {
     public ResponseEntity handleException(Exception ex) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-//        TransportResponse transportResponse = new TransportResponse();
         transportResponse.setResponseMessage((ex.getMessage() == null) ? ex.toString() : ex.getMessage());
         return new ResponseEntity<>(transportResponse, headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }

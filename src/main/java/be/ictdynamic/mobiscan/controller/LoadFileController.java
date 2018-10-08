@@ -31,7 +31,7 @@ public class LoadFileController extends BaseController {
     @RequestMapping(value = "/uploadCarPoolParkingFile",
             method = RequestMethod.POST,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity uploadCarPoolParkingFile(@RequestParam("file") MultipartFile uploadedInputStream) {
+    public ResponseEntity uploadCarPoolParkingFile(@RequestParam("file") MultipartFile uploadedInputStream) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         CarPoolParkingFile carPoolParkingFile;

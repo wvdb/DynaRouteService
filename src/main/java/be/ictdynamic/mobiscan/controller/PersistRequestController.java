@@ -43,7 +43,7 @@ public class PersistRequestController {
             index = 1L;
         }
         else {
-            index += 1;
+            index += 1L;
         }
 
         while (!mobiscanRequest.getDepartureDate().isAfter(lastDayOfMonth)) {
