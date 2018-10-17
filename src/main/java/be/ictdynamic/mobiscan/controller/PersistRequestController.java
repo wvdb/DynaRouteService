@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
@@ -28,7 +30,7 @@ public class PersistRequestController {
     MobiscanRequestRepository mobiscanRequestRepository;
 
     @ApiOperation(value = "Method to persist Mobiscan Requests.",
-            notes = "TBD.")
+            notes = "By default, mobiscan-request will be created with departure-date within range now - endOfMonth.")
     @RequestMapping(value = "/mobiscanRequests",
             method = RequestMethod.POST,
             produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -54,7 +56,11 @@ public class PersistRequestController {
             mobiscanRequest.setDepartureDate(mobiscanRequest.getDepartureDate().plusDays(1));
         }
 
-        return null;
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/events/{id}")
+                .buildAndExpand(mobiscanRequest.getId()).toUri();
+
+        return ResponseEntity.created(location).body(mobiscanRequest);
     }
 
 }

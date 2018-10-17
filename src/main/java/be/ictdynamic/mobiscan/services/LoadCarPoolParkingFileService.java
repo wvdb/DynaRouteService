@@ -102,7 +102,6 @@ public class LoadCarPoolParkingFileService {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Persisted esCarPoolParking: {}", carPoolParkingES);
         }
-
     }
 
 }
