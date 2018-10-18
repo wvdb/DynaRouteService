@@ -32,9 +32,9 @@ import static be.ictdynamic.mobiscan.utilities.MobiscanUtilities.timedReturn;
  * @since 04/04/2017 - 20:35
  */
 @Service
-public class GoogleServiceImpl implements GoogleService {
+public class Old  {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoogleServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Old.class);
 
     @Value("${mobiscan.google-distance-matrix-api-key}")
     private String GOOGLE_DISTANCE_MATRIX_API_KEY;
@@ -42,7 +42,6 @@ public class GoogleServiceImpl implements GoogleService {
     @Value("${mobiscan.isTestMode}")
     private boolean isTestMode;
 
-    @Override
     public GoogleDistanceMatrixResponse getGoogleDistanceMatrixResponse(final MobiscanRequest mobiscanRequest) {
         Date startDate = new Date();
 
@@ -62,8 +61,75 @@ public class GoogleServiceImpl implements GoogleService {
         return timedReturn(LOGGER, new Object() {}.getClass().getEnclosingMethod().getName(), startDate.getTime(), googleDistanceMatrixResponse);
     }
 
-    @Override
-    public Map<String, Double> getLatitudeLongitudeFromGoogle(String address) {
+    private Map<String, Double> getInfoFromOpenWeatherMap(String address, Map<String, Double> mapLatLng, Date departureTime) {
+        LOGGER.info(MobiscanConstants.LOG_STARTING + "getting info from OpenWeatherMap for address = {}, departureTime {}.", address, departureTime);
+
+        // http://openweathermap.org/forecast5
+
+        HttpClient httpClient = new DefaultHttpClient();
+        Map<String, Double> mapWithWeatherInfo = new HashMap<>();
+
+//        http://api.openweathermap.org/data/2.5/forecast?lat=51.1500242&lon=4.4584652&APPID=97fdf5ad61c66373bf9e7c0134e256de
+//        try {
+//            URI uri = new URI(
+//                    "http",
+//                    "api.openweathermap.org",
+//                    "/data/2.5/forecast",
+//                    "lat=" + mapLatLng.get("lat") + "&lon=" + mapLatLng.get("lng") + "&APPID=97fdf5ad61c66373bf9e7c0134e256de",
+//                    null);
+//
+//            String httpRequest = uri.toASCIIString();
+//            HttpGet request = new HttpGet(httpRequest);
+//            HttpResponse httpResponse = httpClient.execute(request);
+//
+//            // CONVERT RESPONSE TO STRING
+//            String stringResult = EntityUtils.toString(httpResponse.getEntity());
+//            LOGGER.debug("--- stringResult = {}", stringResult);
+//
+//            JSONObject jsonObject = new JSONObject(stringResult);
+//            LOGGER.debug("--- jsonObject = {}", jsonObject);
+//
+//            // only process response if cnt > 0
+//
+//            if ((Integer)jsonObject.get("cnt") > 0) {
+//                // CONVERT STRING TO JSON ARRAY
+//                JSONArray lists = jsonObject.getJSONArray("list");
+//
+//                boolean mathingDate = false;
+//
+//                for (int i = 0; i < lists.length() & mathingDate == false; i++) {
+//                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+//                    JSONObject list = lists.getJSONObject(i);
+//
+//                    Integer forecastDateTimeAsInteger = (Integer) list.get("dt");
+//
+//                    // we stop processing once we heave a weather list with a forecastDateTime that exceeds our departure-time
+//                    if ((((long) forecastDateTimeAsInteger) * 1000) > DateUtility.convertDateToEpoch(departureTime)) {
+//                        mathingDate = true;
+//
+//                        JSONObject rain = list.getJSONObject("rain");
+//                        JSONObject snow = list.opt("snow") == null ? null : list.getJSONObject("snow");
+//                        Double rainVolumeForLast3H = rain == null ? 0 : (Double) rain.get("3h");
+//                        Double snowVolumeForLast3H = snow == null ? 0 : (Double) snow.get("3h");
+//
+//                        mapWithWeatherInfo.put("rain", rainVolumeForLast3H);
+//                        mapWithWeatherInfo.put("snow", snowVolumeForLast3H);
+//                    }
+//                }
+//            } else {
+//                LOGGER.error(MobiscanConstants.LOG_ERROR + "openweathermap cnt is <= 0 : {}", jsonObject.get("cnt"));
+//            }
+//
+//        } catch (Throwable e) {
+//            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when using openweathermap: address = {}, exception = {}", address, e);
+//            return mapWithWeatherInfo;
+//        }
+//
+//        LOGGER.info(MobiscanConstants.LOG_ENDING + "address {}, departureTime {} has rain {} and snow {}.", address, departureTime, mapWithWeatherInfo.get("lat"), mapWithWeatherInfo.get("lng"));
+        return mapWithWeatherInfo;
+    }
+
+    private Map<String, Double> getLatitudeLongitudeFromGoogle(String address) {
         LOGGER.info(MobiscanConstants.LOG_STARTING + "getting LatitudeLongitudeFromGoogle for address = {}", address);
 
         // Geocoding API = https://developers.google.com/maps/documentation/geocoding/intro
@@ -76,7 +142,8 @@ public class GoogleServiceImpl implements GoogleService {
                     "https",
                     "maps.googleapis.com",
                     "/maps/api/geocode/json",
-                    "address=" + address + "&key=" + GOOGLE_DISTANCE_MATRIX_API_KEY,
+//                    "address=" + address + "&key=" + GOOGLE_DISTANCE_MATRIX_API_KEY,
+                    "address=" + address,
                     null);
 
             String httpRequest = uri.toASCIIString();
@@ -87,36 +154,71 @@ public class GoogleServiceImpl implements GoogleService {
             String stringResult = EntityUtils.toString(httpResponse.getEntity());
             LOGGER.debug("--- stringResult = {}", stringResult);
 
-            JSONParser parser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) parser.parse(stringResult);
-            LOGGER.debug("--- jsonObject = {}", jsonObject);
+//            JSONObject jsonObject = new JSONObject(stringResult);
+//            LOGGER.debug("--- jsonObject = {}", jsonObject);
 
             // only process response if google was able to process the request
 
-            if ("OK".equals(jsonObject.get("status"))) {
-                JSONArray results = (JSONArray) jsonObject.get("results");
-
-                for (int i = 0; i < results.size(); i++) {
-                    JSONObject result = (JSONObject) results.get(i);
-
-                    JSONObject geometry = (JSONObject) result.get("geometry");
-                    JSONObject location = (JSONObject) geometry.get("location");
-
-                    mapWithLatAndLng.put("lat", (Double) location.get("lat"));
-                    mapWithLatAndLng.put("lng", (Double) location.get("lng"));
-                }
-            } else {
-                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
-            }
+//            if ("OK".equals(jsonObject.get("status"))) {
+//                // CONVERT STRING TO JSON ARRAY
+//                JSONArray results = jsonObject.getJSONArray("results");
+//
+//                for (int i = 0; i < results.length(); i++) {
+//                    // GET INDIVIDUAL JSON OBJECT FROM JSON ARRAY
+//                    JSONObject result = results.getJSONObject(i);
+//
+//                    JSONObject geometry = result.getJSONObject("geometry");
+//                    JSONObject location = geometry.getJSONObject("location");
+//                    Double lat = (Double) location.get("lat");
+//                    Double lng = (Double) location.get("lng");
+//
+//                    mapWithLatAndLng.put("lat", lat);
+//                    mapWithLatAndLng.put("lng", lng);
+//                }
+//            } else {
+//                LOGGER.error(MobiscanConstants.LOG_ERROR + "Google returns an error: status {}", jsonObject.get("status"));
+//            }
 
         } catch (Throwable e) {
-            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when geo-coding: address = {}", address);
+            LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when geocoding: address = {}", address);
             return mapWithLatAndLng;
         }
 
-        LOGGER.debug(MobiscanConstants.LOG_ENDING + "address {} has lat {} and lng {}.", address, mapWithLatAndLng.get("lat"), mapWithLatAndLng.get("lng"));
+        LOGGER.info(MobiscanConstants.LOG_ENDING + "address {} has lat {} and lng {}.", address, mapWithLatAndLng.get("lat"), mapWithLatAndLng.get("lng"));
         return mapWithLatAndLng;
     }
+
+//    public TransportResponseFastestSlowest getGoogleDistanceFastestAndSlowest(final TransportRequest transportRequest) {
+//        TransportResponseFastestSlowest transportResponseFastestSlowest = new TransportResponseFastestSlowest();
+//        transportResponseFastestSlowest.setFastestRoutes(new ArrayList<>(5));
+//        transportResponseFastestSlowest.setSlowestRoutes(new ArrayList<>(5));
+//        transportResponseFastestSlowest.setRoutes(new ArrayList<>(336));
+//
+//        List<String> transitModes = Collections.singletonList(DRIVING);
+//
+//        transitModes.forEach(transitMode -> {
+//            long departTimeLong;
+//            departTimeLong = transportRequest.getDepartureTime().getTime() / 1000;
+//            for (int i = 1; i <= transportRequest.getNumberOfDepartureTimesToBeProcessed(); i++) {
+//                TransportInfo transportInfo = null;
+//                try {
+//                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+//                    String routeDateAsString = sdf.format(new Date(departTimeLong * 1000));
+//                    transportInfo = this.getGoogleDistanceBasedOnTransportModeAndTime(transportRequest, transitMode, departTimeLong, routeDateAsString);
+//
+//                    TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest transportResponseDetailsFastestSlowest = new TransportResponseFastestSlowest.TransportResponseDetailsFastestSlowest(new Date(departTimeLong), routeDateAsString, transportInfo.getDuration());
+//                    transportResponseFastestSlowest.getRoutes().add(transportResponseDetailsFastestSlowest);
+//
+//                    // increase departure Time with 1800 seconds for next processing
+//                    departTimeLong += 1800;
+//                } catch (URISyntaxException e) {
+//                    LOGGER.error(MobiscanConstants.LOG_ERROR + "Exception occurred when invoking getGoogleDistanceBasedOnTransportModeAndTime : message = {}, mode = {}, request = {}", e.getMessage(), transitMode, transportRequest);
+//                }
+//            }
+//        });
+//
+//        return transportResponseFastestSlowest;
+//    }
 
     private GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail getGoogleDistanceBasedOnTransportModeAndTime(final MobiscanRequest mobiscanRequest, final String transitMode) throws Exception {
         LOGGER.debug(MobiscanConstants.LOG_STARTING + "mode = {}, fromAddress = {}, toAddress = {}, departureTime = {}", transitMode, mobiscanRequest.getLocationFrom(), mobiscanRequest.getLocationTo(), mobiscanRequest.getDepartureDate());
@@ -217,6 +319,7 @@ public class GoogleServiceImpl implements GoogleService {
             // only process response if google was able to process the request
 
             if ("OK".equals(jsonObject.get("status"))) {
+                // CONVERT STRING TO JSON ARRAY
                 JSONArray jsonArrayRow = (JSONArray) jsonObject.get("rows");
 
                 for (int i = 0; i < jsonArrayRow.size(); i++) {

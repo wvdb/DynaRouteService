@@ -5,7 +5,14 @@ import be.ictdynamic.mobiscan.domain.MobiscanRequest;
 import be.ictdynamic.mobiscan.repository.MobiscanRequestRepository;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +25,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import static be.ictdynamic.mobiscan.utilities.MobiscanUtilities.timedReturn;
 
 @Component
 public class ProcessMobiscanRequestService {
@@ -49,9 +59,13 @@ public class ProcessMobiscanRequestService {
       * retrieving requests that haven't been processed yet
       * for each request:
           * retrieving distance and duration from Google (or test-json as found in MobiscanConstants)
-          * retrieving latitude/longitude from Google (or test-json as found in MobiscanConstants) -> TBD
-          * persistence of locationFrom in ES (if entry doesn't exist yet) -> TBD
-          * persistence of locationTo in ES (if entry doesn't exist yet) -> TBD
+          * for location-from-address|location-to-address
+          *   if address doesn't exist in ES yet
+          *     retrieving latitude/longitude from Google (or test-json as found in MobiscanConstants)
+          *     persistence of address with lat/lon in ES
+          *   end-if
+          * end-for
+          * persistence of googleDistanceMatrixResponse in ES : TBD
           * update request's processing-date
 
      */
@@ -68,11 +82,11 @@ public class ProcessMobiscanRequestService {
                 GoogleDistanceMatrixResponse googleDistanceMatrixResponse = googleService.getGoogleDistanceMatrixResponse(mobiscanRequest);
 
                 if (mobiscanRequest.getLocationFrom() != null && saveToES) {
-                    addressId1 = persistAddressInES(mobiscanRequest.getLocationFrom(), 0D, 0D);
+                    addressId1 = processAddress(mobiscanRequest.getLocationFrom());
                 }
 
                 if (mobiscanRequest.getLocationTo() != null && saveToES) {
-                    addressId2 = persistAddressInES(mobiscanRequest.getLocationTo(), 0D, 0D);
+                    addressId2 = processAddress(mobiscanRequest.getLocationTo());
                 }
 
                 mobiscanRequest.setProcessingDate(LocalDateTime.now());
@@ -82,11 +96,46 @@ public class ProcessMobiscanRequestService {
 
     }
 
+    private String processAddress(String address) {
+        String addressRetrieved = retrieveAddressFromES(address);
+
+        if (addressRetrieved == null) {
+            Map<String, Double> latLonMap = googleService.getLatitudeLongitudeFromGoogle(address);
+            if (latLonMap != null && latLonMap.keySet().size() == 2) {
+                return persistAddressInES(address, latLonMap.get("lat"), latLonMap.get("lng"));
+            }
+            else {
+                return null;
+            }
+        }
+        else {
+            return addressRetrieved;
+        }
+    }
+
+    private String retrieveAddressFromES(String address) {
+        Date startDate = new Date();
+
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Retrieving address {}.", address);
+        }
+
+        BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+        boolQuery.must(QueryBuilders.termQuery("address", address));
+
+        sourceBuilder.query(boolQuery).size(10_000);
+
+        SearchRequest searchRequest = new SearchRequest(ES_MOBISCAN_LOCATION_INDEX_NAME)
+                .types(ES_MOBISCAN_LOCATION_INDEX_TYPE)
+                .source(sourceBuilder);
+        String addressRetrieved = processSearchRequest(searchRequest);
+
+        return timedReturn(LOGGER, new Object() {}.getClass().getEnclosingMethod().getName(), startDate.getTime(), addressRetrieved);
+    }
+
     private String persistAddressInES(String address, double latitude, double longitude) {
-//            MobiscanLocationES mobiscanLocationES = new MobiscanLocationES();
-
-            // TBD : to search against ES if address exists already
-
             JSONObject myLocation = new JSONObject();
             myLocation.put("lon", longitude);
             myLocation.put("lat", latitude);
@@ -105,9 +154,31 @@ public class ProcessMobiscanRequestService {
             }
             return indexResponse.getId();
         } catch (IOException e) {
-            LOGGER.error("Failed to persist addres {} in ES. Exception = {}.", address, e);
+            LOGGER.error("Failed to persist address {} in ES. Exception = {}.", address, e);
             return null;
         }
+    }
 
+    // private methods
+    // ---------------
+
+    private String processSearchRequest(SearchRequest searchRequest) {
+        try {
+            SearchResponse searchResponse = restClient.search(searchRequest);
+            SearchHits hits = searchResponse.getHits();
+
+            for (SearchHit hit : hits.getHits()) {
+                return getAddressFromESHit(hit);
+            }
+        }
+        catch (Exception e) {
+            LOGGER.error("Elasticsearch error. Message = {}.", e.getMessage());
+        }
+        return null;
+    }
+
+    private static String getAddressFromESHit(SearchHit hit) {
+        Map<String,Object> source = hit.getSourceAsMap();
+        return (String) source.get("address");
     }
 }
