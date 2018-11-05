@@ -1,7 +1,7 @@
 package be.ictdynamic.mobiscan;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MobiscanApplication.class)
 @WebAppConfiguration
-@Ignore
+@Ignore("Test units to be done ... ")
 public class PersistRequestControllerTest {
 
     @Autowired
