@@ -83,10 +83,16 @@ public class ProcessMobiscanRequestService {
 
                 if (mobiscanRequest.getLocationFrom() != null && saveToES) {
                     addressId1 = processAddress(mobiscanRequest.getLocationFrom());
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Id of from-address {} is {}.", mobiscanRequest.getLocationFrom(), addressId1);
+                    }
                 }
 
                 if (mobiscanRequest.getLocationTo() != null && saveToES) {
                     addressId2 = processAddress(mobiscanRequest.getLocationTo());
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Id of to-address {} is {}.", mobiscanRequest.getLocationTo(), addressId2);
+                    }
                 }
 
                 mobiscanRequest.setProcessingDate(LocalDateTime.now());
@@ -96,10 +102,13 @@ public class ProcessMobiscanRequestService {
 
     }
 
-    private String processAddress(String address) {
-        String addressRetrieved = retrieveAddressFromES(address);
+    // private methods
+    // ---------------
 
-        if (addressRetrieved == null) {
+    private String processAddress(String address) {
+        String mobiscanLocationId = retrieveMobiscanLocationIdFromES(address);
+
+        if (mobiscanLocationId == null) {
             Map<String, Double> latLonMap = googleService.getLatitudeLongitudeFromGoogle(address);
             if (latLonMap != null && latLonMap.keySet().size() == 2) {
                 return persistAddressInES(address, latLonMap.get("lat"), latLonMap.get("lng"));
@@ -109,11 +118,11 @@ public class ProcessMobiscanRequestService {
             }
         }
         else {
-            return addressRetrieved;
+            return mobiscanLocationId;
         }
     }
 
-    private String retrieveAddressFromES(String address) {
+    private String retrieveMobiscanLocationIdFromES(String address) {
         Date startDate = new Date();
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
@@ -136,16 +145,16 @@ public class ProcessMobiscanRequestService {
     }
 
     private String persistAddressInES(String address, double latitude, double longitude) {
-            JSONObject myLocation = new JSONObject();
-            myLocation.put("lon", longitude);
-            myLocation.put("lat", latitude);
+        JSONObject myLocation = new JSONObject();
+        myLocation.put("lon", longitude);
+        myLocation.put("lat", latitude);
 
-            IndexRequest indexRequest = new IndexRequest(ES_MOBISCAN_LOCATION_INDEX_NAME, ES_MOBISCAN_LOCATION_INDEX_TYPE)
-                    .source(
-                            "createdOn", new Date(),
-                            "address", address,
-                            "location", myLocation
-                    );
+        IndexRequest indexRequest = new IndexRequest(ES_MOBISCAN_LOCATION_INDEX_NAME, ES_MOBISCAN_LOCATION_INDEX_TYPE)
+                .source(
+                        "createdOn", new Date(),
+                        "address", address,
+                        "location", myLocation
+                );
 
         try {
             IndexResponse indexResponse = restClient.index(indexRequest);
@@ -159,16 +168,13 @@ public class ProcessMobiscanRequestService {
         }
     }
 
-    // private methods
-    // ---------------
-
     private String processSearchRequest(SearchRequest searchRequest) {
         try {
             SearchResponse searchResponse = restClient.search(searchRequest);
             SearchHits hits = searchResponse.getHits();
 
             for (SearchHit hit : hits.getHits()) {
-                return getAddressFromESHit(hit);
+                return hit.getId();
             }
         }
         catch (Exception e) {

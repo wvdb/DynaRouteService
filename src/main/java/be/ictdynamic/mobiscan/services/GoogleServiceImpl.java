@@ -8,7 +8,7 @@ import be.ictdynamic.mobiscan.utilities.DateUtility;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -68,7 +68,7 @@ public class GoogleServiceImpl implements GoogleService {
 
         // Geocoding API = https://developers.google.com/maps/documentation/geocoding/intro
 
-        HttpClient httpClient = new DefaultHttpClient();
+        HttpClient httpClient = HttpClientBuilder.create().build();
         Map<String, Double> mapWithLatAndLng = new HashMap<>();
 
         try {
@@ -166,7 +166,7 @@ public class GoogleServiceImpl implements GoogleService {
 
         GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail googleDistanceMatrixResponseDetail = new GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail();
 
-        HttpClient httpClient = new DefaultHttpClient();
+        HttpClient httpClient = HttpClientBuilder.create().build();
 
         String departureTime = "";
         if (mobiscanRequest.getDepartureDate() != null && mobiscanRequest.getDepartureDate().isAfter(LocalDateTime.now()) ) {
