@@ -203,7 +203,7 @@ public class GoogleServiceImpl implements GoogleService {
                 if (Integer.parseInt(mobiscanRequest.getEmployeeId()) > 1) {
                     index = 0;
                 }
-                stringResult = MobiscanConstants.DISTANCE_MATRIX_TEST_RESPONSE[index];
+                stringResult = MobiscanConstants.DISTANCE_MATRIX_MOCK_RESPONSES[index];
             }
 
             LOGGER.debug("--- stringResult = {}", stringResult);

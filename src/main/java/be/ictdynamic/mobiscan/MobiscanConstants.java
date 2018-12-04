@@ -8,7 +8,7 @@ public abstract class MobiscanConstants {
     public static final String LOG_ERROR = "!!!Error ";
     public static final String LOG_ENDING = "<<<Exiting ";
 
-    public static final String DISTANCE_MATRIX_TEST_RESPONSE_0 = "{\n" +
+    public static final String DISTANCE_MATRIX_MOCK_RESPONSE_0 = "{\n" +
             "   \"destination_addresses\" : [ \"Liersesteenweg 4, 2800 Mechelen, Belgium\" ],\n" +
             "   \"origin_addresses\" : [ \"Tweebunder 4, Edegem, Belgium\" ],\n" +
             "   \"rows\" : [\n" +
@@ -31,7 +31,7 @@ public abstract class MobiscanConstants {
             "   \"status\" : \"OK\"\n" +
             "}";
 
-    public static final String DISTANCE_MATRIX_TEST_RESPONSE_1 = "{\n" +
+    public static final String DISTANCE_MATRIX_MOCK_RESPONSE_1 = "{\n" +
             "   \"destination_addresses\" : [ \"Wetstraat 1, Brussel, Belgium\" ],\n" +
             "   \"origin_addresses\" : [ \"Tweebunder 4, Edegem, Belgium\" ],\n" +
             "   \"rows\" : [\n" +
@@ -54,6 +54,6 @@ public abstract class MobiscanConstants {
             "   \"status\" : \"OK\"\n" +
             "}";
 
-    public static String DISTANCE_MATRIX_TEST_RESPONSE[] = new String[]{DISTANCE_MATRIX_TEST_RESPONSE_0, DISTANCE_MATRIX_TEST_RESPONSE_1};
+    public static String DISTANCE_MATRIX_MOCK_RESPONSES[] = new String[]{DISTANCE_MATRIX_MOCK_RESPONSE_0, DISTANCE_MATRIX_MOCK_RESPONSE_1};
 
 }

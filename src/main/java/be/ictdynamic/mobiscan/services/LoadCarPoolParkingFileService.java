@@ -40,10 +40,10 @@ public class LoadCarPoolParkingFileService {
     private boolean saveToES;
 
     @Value("${mobiscan.es.carpool_parking_index_name}")
-    public String ES_CAR_POOL_PARKING_INDEX_NAME;
+    private String ES_CAR_POOL_PARKING_INDEX_NAME;
 
     @Value("${mobiscan.es.carpool_parking_index_type}")
-    public String ES_CAR_POOL_PARKING_INDEX_TYPE;
+    private String ES_CAR_POOL_PARKING_INDEX_TYPE;
 
     public int persistCarPoolParkings(CarPoolParkingFile carPoolParkingFile) throws IllegalArgumentException, IOException{
         if (saveToMySql) {
@@ -67,7 +67,7 @@ public class LoadCarPoolParkingFileService {
             if (saveToES) {
                 persistInES(carPoolParkingToBePersisted);
             }
-        };
+        }
 
         return carPoolParkingFile.getCarpoolparkings().size();
     }
