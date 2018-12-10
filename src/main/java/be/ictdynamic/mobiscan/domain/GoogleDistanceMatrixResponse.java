@@ -40,12 +40,12 @@ public class GoogleDistanceMatrixResponse implements Serializable {
         // distance in meters
         @Getter
         @Setter
-        private Integer distance;
+        private Long distance;
 
         // duration in seconds
         @Getter
         @Setter
-        private Integer duration;
+        private Long duration;
 
         @Override
         public String toString() {
