@@ -64,7 +64,7 @@ public class GoogleServiceImpl implements GoogleService {
     }
 
     @Override
-    public Map<String, Double> getLatitudeLongitudeFromGoogle(String address) throws MobiscanException {
+    public Map<String, Double> getGoogleLatitudeLongitude(String address) throws MobiscanException {
         LOGGER.info(MobiscanConstants.LOG_STARTING + "getting LatitudeLongitudeFromGoogle for address = {}", address);
 
         // Geocoding API = https://developers.google.com/maps/documentation/geocoding/intro
@@ -126,49 +126,6 @@ public class GoogleServiceImpl implements GoogleService {
     private GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail getGoogleDistanceBasedOnTransportModeAndTime(final MobiscanRequest mobiscanRequest, final String transitMode) throws Exception {
         LOGGER.debug(MobiscanConstants.LOG_STARTING + "mode = {}, fromAddress = {}, toAddress = {}, departureTime = {}", transitMode, mobiscanRequest.getLocationFrom(), mobiscanRequest.getLocationTo(), mobiscanRequest.getDepartureDate());
 
-        // Google Distance Matrix API
-        // https://developers.google.com/maps/documentation/distance-matrix/start
-        // https://developers.google.com/maps/documentation/distance-matrix/intro
-
-        // example of a request:
-
-//        https://maps.googleapis.com/maps/api/distancematrix/json?
-//                              origins=Tweebunder%204,+Edegem,+Belgium&
-//                              destinations=Oostende,+Belgium&
-//                              departure_time=1492675220&
-//                              key=AIzaSyDrQxf6ftnF-2xihZBUQkTL6ZEIlgee5WA
-
-        // example of a response:
-
-//        {
-//            "destination_addresses" : [ "8400 Ostend, Belgium" ],
-//            "origin_addresses" : [ "Tweebunder 4, 2650 Edegem, Belgium" ],
-//            "rows" : [
-//            {
-//                "elements" : [
-//                {
-//                    "distance" : {
-//                    "text" : "129 km",
-//                            "value" : 128582
-//                },
-//                    "duration" : {
-//                    "text" : "1 hour 17 mins",
-//                            "value" : 4629
-//                },
-//                    "duration_in_traffic" : {
-//                    "text" : "1 hour 19 mins",
-//                            "value" : 4725
-//                },
-//                    "status" : "OK"
-//                }
-//                ]
-//            }
-//            ],
-//            "status" : "OK"
-//        }
-
-        // epoch : https://www.epochconverter.com/
-
         GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail googleDistanceMatrixResponseDetail = new GoogleDistanceMatrixResponse.GoogleDistanceMatrixResponseDetail();
 
         HttpClient httpClient = HttpClientBuilder.create().build();
@@ -218,10 +175,7 @@ public class GoogleServiceImpl implements GoogleService {
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(stringResult);
 
-//            JSONObject jsonObject = new JSONObject(stringResult);
             LOGGER.debug("--- jsonObject = {}", jsonObject);
-
-            // only process response if google was able to process the request
 
             if ("OK".equals(jsonObject.get("status"))) {
                 JSONArray jsonArrayRow = (JSONArray) jsonObject.get("rows");

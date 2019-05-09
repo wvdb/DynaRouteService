@@ -159,7 +159,7 @@ public class ProcessMobiscanRequestService {
         String mobiscanLocationId = retrieveMobiscanLocationIdFromES(address);
 
         if (mobiscanLocationId == null) {
-            Map<String, Double> latLonMap = googleService.getLatitudeLongitudeFromGoogle(address);
+            Map<String, Double> latLonMap = googleService.getGoogleLatitudeLongitude(address);
             if (latLonMap != null && latLonMap.keySet().size() == 2) {
                 return persistAddressInES(address, latLonMap.get("lat"), latLonMap.get("lng"));
             }

@@ -19,6 +19,50 @@ docker-compose up
 ### Swagger
 http://localhost:8088/dyna-route-service/swagger-ui.html
 
+### Google Distance Matrix API
+
+// https://developers.google.com/maps/documentation/distance-matrix/start
+// https://developers.google.com/maps/documentation/distance-matrix/intro
+
+// example of a request:
+
+//        https://maps.googleapis.com/maps/api/distancematrix/json?
+//                              origins=Tweebunder%204,+Edegem,+Belgium&
+//                              destinations=Oostende,+Belgium&
+//                              departure_time=1492675220&
+//                              key=AIzaSyDrQxf6ftnF-2xihZBUQkTL6ZEIlgee5WA
+
+// example of a response:
+
+//        {
+//            "destination_addresses" : [ "8400 Ostend, Belgium" ],
+//            "origin_addresses" : [ "Tweebunder 4, 2650 Edegem, Belgium" ],
+//            "rows" : [
+//            {
+//                "elements" : [
+//                {
+//                    "distance" : {
+//                    "text" : "129 km",
+//                            "value" : 128582
+//                },
+//                    "duration" : {
+//                    "text" : "1 hour 17 mins",
+//                            "value" : 4629
+//                },
+//                    "duration_in_traffic" : {
+//                    "text" : "1 hour 19 mins",
+//                            "value" : 4725
+//                },
+//                    "status" : "OK"
+//                }
+//                ]
+//            }
+//            ],
+//            "status" : "OK"
+//        }
+
+// epoch : https://www.epochconverter.com/
+
 ### Websites of interest (others)
 * http://www.objgen.com/json
 * https://jsonlint.com/

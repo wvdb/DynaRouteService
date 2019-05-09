@@ -14,6 +14,5 @@ import java.util.Map;
  */
 public interface GoogleService {
     public GoogleDistanceMatrixResponse getGoogleDistanceMatrixResponse(final MobiscanRequest mobiscanRequest);
-    public Map<String, Double> getLatitudeLongitudeFromGoogle(String address) throws MobiscanException;
-//    public TransportResponse processRouteRequest(MobiscanRequest mobiscanRequest) throws Exception;
+    public Map<String, Double> getGoogleLatitudeLongitude(String address) throws MobiscanException;
 }
