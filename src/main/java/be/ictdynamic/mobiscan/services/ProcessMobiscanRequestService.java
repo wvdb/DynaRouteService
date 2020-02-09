@@ -71,7 +71,6 @@ public class ProcessMobiscanRequestService {
           * end-for
           * persistence of googleDistanceMatrixResponse in ES
           * update request's processing-date
-
      */
     @Scheduled(fixedDelayString = "${mobiscan.job.processMobiscanRequest.fixedRate}")
     public void processMobiscanRequests() throws MobiscanException {
